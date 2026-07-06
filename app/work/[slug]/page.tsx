@@ -1,0 +1,105 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowRight } from "lucide-react";
+import { projects } from "@/data/content";
+import Reveal from "@/components/Reveal";
+import SectionHeading from "@/components/SectionHeading";
+
+type Params = { params: Promise<{ slug: string }> };
+
+export function generateStaticParams() {
+  return projects.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { slug } = await params;
+  const project = projects.find((p) => p.slug === slug);
+  if (!project) return {};
+  return {
+    title: project.title,
+    description: project.summary,
+    openGraph: { images: [{ url: project.hero }] },
+  };
+}
+
+export default async function CaseStudyPage({ params }: Params) {
+  const { slug } = await params;
+  const index = projects.findIndex((p) => p.slug === slug);
+  if (index === -1) notFound();
+  const project = projects[index];
+  const next = projects[(index + 1) % projects.length];
+
+  return (
+    <article>
+      {/* fullscreen hero */}
+      <div className="relative h-[72vh] min-h-[420px] md:h-[86vh]">
+        <Image
+          src={project.hero}
+          alt={`${project.title} — hero`}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-bg/40" />
+        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-[1600px] px-6 pb-12 md:px-12">
+          <SectionHeading as="h1" size="display-1" title={project.title} eyebrow={project.summary} />
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-[1600px] px-6 md:px-12">
+        {/* mono meta table */}
+        <Reveal className="mt-14 grid grid-cols-2 gap-y-8 border-y border-line py-8 font-mono text-sm md:grid-cols-4">
+          {[
+            ["Client", project.client],
+            ["Role", project.role],
+            ["Year", project.year],
+            ["Stack", project.stack],
+          ].map(([label, value]) => (
+            <div key={label}>
+              <dt className="text-[10px] uppercase tracking-[0.3em] text-muted">{label}</dt>
+              <dd className="mt-2">{value}</dd>
+            </div>
+          ))}
+        </Reveal>
+
+        <Reveal className="mx-auto mt-20 max-w-3xl">
+          <p className="font-display text-xl font-medium leading-relaxed md:text-2xl">
+            {project.story}
+          </p>
+        </Reveal>
+
+        <div className="mt-20 grid gap-8 md:grid-cols-2">
+          {project.images.map((src, i) => (
+            <Reveal key={src} delay={i * 0.1}>
+              <div className="relative aspect-[16/10] overflow-hidden">
+                <Image
+                  src={src}
+                  alt={`${project.title} — detail ${i + 1}`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* next project */}
+        <Reveal className="mt-28 border-t border-line pt-12">
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted">Next project</p>
+          <Link
+            href={`/work/${next.slug}`}
+            data-cursor="View"
+            className="group mt-4 inline-flex items-center gap-4 font-display text-3xl font-medium transition-colors hover:text-accent md:text-5xl"
+          >
+            {next.title}
+            <ArrowRight className="transition-transform duration-300 group-hover:translate-x-2" size={32} />
+          </Link>
+        </Reveal>
+      </div>
+    </article>
+  );
+}

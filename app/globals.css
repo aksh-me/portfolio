@@ -1,0 +1,111 @@
+/* Display face: Clash Display via Fontshare CDN (swap). If you prefer a Google
+   font, remove this and load "Unbounded" through next/font in app/layout.tsx. */
+@import url("https://api.fontshare.com/v2/css?f[]=clash-display@500,600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ─────────────────────────────────────────────────────────
+   Light theme on :root, dark theme on .dark (dark is the default theme).
+   Components must never hardcode hex values — always use these variables. */
+:root {
+  --bg: #f7f5f2;
+  --surface: #ffffff;
+  --text: #121212;
+  --muted: #6e6a66;
+  --accent: #c01030;
+  --accent-hover: #dc143c;
+  --line: rgba(18, 18, 18, 0.08);
+  --accent-contrast: #f7f5f2;
+}
+
+.dark {
+  --bg: #0a0a0b;
+  --surface: #131315;
+  --text: #f2f0ed;
+  --muted: #8a8784;
+  --accent: #dc143c;
+  --accent-hover: #f03a5a;
+  --line: rgba(242, 240, 237, 0.08);
+  --accent-contrast: #f2f0ed;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+/* Visible crimson focus rings for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Thin, quiet scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 5px;
+}
+
+/* Lenis recommended styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Hide the native cursor only when the custom cursor is active (fine pointers) */
+@media (pointer: fine) {
+  html.custom-cursor,
+  html.custom-cursor a,
+  html.custom-cursor button,
+  html.custom-cursor [role="button"] {
+    cursor: none;
+  }
+}
+
+/* Hairline utility */
+.hairline-t {
+  border-top: 1px solid var(--line);
+}
+.hairline-b {
+  border-bottom: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
