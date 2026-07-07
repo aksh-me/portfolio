@@ -35,6 +35,13 @@ html {
   scroll-behavior: auto;
 }
 
+/* No sideways scroll or zoom-out blank space on mobile */
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
 body {
   background-color: var(--bg);
   color: var(--text);

@@ -76,10 +76,11 @@ export default async function CaseStudyPage({ params }: Params) {
         {/* Live site embedded — the real thing, not a screenshot */}
         {project.liveUrl && (
           <Reveal className="mt-20">
-            <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-muted">
+            <p className="mb-4 hidden font-mono text-xs uppercase tracking-[0.3em] text-muted md:block">
               Live preview
             </p>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-sm border border-line bg-surface sm:aspect-[16/10]">
+            {/* embedded preview is desktop-only; phones get the button below */}
+            <div className="relative hidden overflow-hidden rounded-sm border border-line bg-surface md:block md:aspect-[16/10]">
               <iframe
                 src={project.liveUrl}
                 title={`${project.title} — live site preview`}
