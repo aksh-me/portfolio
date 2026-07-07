@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Instagram, Palette, Mail } from "lucide-react";
+import { Instagram, Mail } from "lucide-react";
 import { footerNav, site } from "@/data/content";
 import Clock from "@/components/Clock";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -73,15 +73,6 @@ export default function Footer() {
                     rel="noopener noreferrer"
                   >
                     <Instagram size={14} /> Instagram
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={site.behance}
-                    className="flex items-center gap-2 text-sm transition-colors hover:text-accent"
-                    rel="noopener noreferrer"
-                  >
-                    <Palette size={14} /> Behance
                   </a>
                 </li>
                 <li>

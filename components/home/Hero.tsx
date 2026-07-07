@@ -57,12 +57,14 @@ export default function Hero() {
           />
         </div>
         {/* legibility scrim */}
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/60 to-bg/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/60 to-bg/40" />
+        {/* subtle top band so the nav stays readable over bright photos */}
+        <div className="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-bg via-bg/55 to-transparent" />
       </motion.div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1600px] px-6 pb-16 pt-40 md:px-12 md:pb-24">
         <motion.p
-          className="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-muted"
+          className="mb-6 font-mono text-xs uppercase tracking-[0.3em] text-ink/80"
           initial={reduce ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
@@ -74,8 +76,15 @@ export default function Hero() {
           {words.map((word, i) => {
             const accented = word.startsWith("*");
             const clean = word.replace(/\*/g, "");
+            // extra right room so the mask doesn't clip the italic accent word
+            const needsRoom = accented || i === words.length - 1;
             return (
-              <span key={i} className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-bottom">
+              <span
+                key={i}
+                className={`inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-bottom ${
+                  needsRoom ? "pr-[0.28em]" : ""
+                }`}
+              >
                 <motion.span
                   className="inline-block"
                   initial={reduce ? false : { y: "110%" }}

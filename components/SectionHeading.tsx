@@ -41,8 +41,16 @@ export default function SectionHeading({
         {words.map((word, i) => {
           const accented = word.startsWith("*");
           const clean = word.replace(/\*/g, "");
+          // Italic (accent) + final words overhang their advance width; extra
+          // right padding keeps the overflow mask from clipping the last glyph.
+          const needsRoom = accented || i === words.length - 1;
           return (
-            <span key={i} className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-bottom">
+            <span
+              key={i}
+              className={`inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-bottom ${
+                needsRoom ? "pr-[0.28em]" : ""
+              }`}
+            >
               <motion.span
                 className={`inline-block ${accented ? "italic text-accent" : ""}`}
                 initial={reduce ? false : { y: "110%" }}

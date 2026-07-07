@@ -20,7 +20,7 @@ export default function PhotoStrip() {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const driftX = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -140]);
+  const driftX = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -100]);
 
   useEffect(() => {
     const measure = () => {
@@ -32,7 +32,8 @@ export default function PhotoStrip() {
     return () => window.removeEventListener("resize", measure);
   }, []);
 
-  const strip = photos.slice(0, 8);
+  // featured shots span all categories, so the strip stays varied
+  const strip = photos.filter((p) => p.featured).slice(0, 8);
 
   return (
     <section ref={sectionRef} className="overflow-hidden pt-28 md:pt-40">
@@ -40,16 +41,19 @@ export default function PhotoStrip() {
         <SectionHeading eyebrow="Photography" title="Frames from the *field*" />
       </div>
 
-      <motion.div style={{ x: driftX }} className="mt-14">
+      <div className="mt-14">
+        {/* Clip first, then drift INSIDE the clip so the parallax can never
+            expose the page background on the right edge. */}
         <div ref={stripRef} className="overflow-hidden px-6 md:px-12">
-          <motion.div
-            className="flex w-max cursor-grab gap-5 active:cursor-grabbing"
-            drag="x"
-            dragConstraints={{ left: -dragWidth, right: 0 }}
-            dragElastic={0.08}
-            dragTransition={{ power: 0.25, timeConstant: 220 }}
-          >
-            {strip.map((photo) => (
+          <motion.div style={{ x: driftX }} className="w-max">
+            <motion.div
+              className="flex w-max cursor-grab gap-5 active:cursor-grabbing"
+              drag="x"
+              dragConstraints={{ left: -dragWidth, right: 0 }}
+              dragElastic={0.08}
+              dragTransition={{ power: 0.25, timeConstant: 220 }}
+            >
+              {strip.map((photo) => (
               <figure key={photo.id} className="w-[240px] shrink-0 select-none md:w-[320px]">
                 <div className="pointer-events-none relative aspect-[3/4] overflow-hidden">
                   <Image
@@ -68,10 +72,11 @@ export default function PhotoStrip() {
                   <span className="font-mono text-[10px] tracking-widest text-muted">{photo.exif}</span>
                 </figcaption>
               </figure>
-            ))}
+              ))}
+            </motion.div>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
 
       <Reveal className="mx-auto mt-14 max-w-[1600px] px-6 md:px-12">
         <Link

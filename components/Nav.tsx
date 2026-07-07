@@ -45,10 +45,18 @@ export default function Nav() {
             : "bg-transparent py-6"
         }`}
       >
+        {/* Legibility scrim over hero imagery when the nav is transparent —
+            lightens (light theme) / darkens (dark theme) the top band. */}
+        {!scrolled && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28 bg-gradient-to-b from-bg/90 to-transparent"
+          />
+        )}
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 md:px-12">
           <Link
             href="/"
-            className="font-display text-lg font-semibold tracking-tight"
+            className="whitespace-nowrap font-display text-lg font-semibold tracking-tight"
             aria-label={`${site.name} — home`}
           >
             {site.name}
@@ -61,7 +69,11 @@ export default function Nav() {
                 key={item.href}
                 href={item.href}
                 className={`text-sm transition-colors hover:text-accent ${
-                  pathname.startsWith(item.href) ? "text-accent" : "text-muted"
+                  pathname.startsWith(item.href)
+                    ? "text-accent"
+                    : scrolled
+                      ? "text-muted"
+                      : "text-ink"
                 }`}
               >
                 {item.label}
@@ -82,7 +94,7 @@ export default function Nav() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-line md:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-bg/60 backdrop-blur-md md:hidden"
             aria-label="Open menu"
           >
             <Menu size={18} />

@@ -16,28 +16,30 @@
  */
 
 export const site = {
-  name: "[NAME]",
-  city: "[CITY]",
-  role: "Web designer & photographer",
-  email: "[EMAIL]",
-  instagram: "[INSTAGRAM]", // REPLACE: full URL, e.g. https://instagram.com/you
-  behance: "[BEHANCE]", // REPLACE: full URL, e.g. https://behance.net/you
-  url: "https://example.com", // REPLACE: your deployed domain (used for SEO/OG)
-  studioLine: "Websites & photographs by [NAME]",
+  name: "Aksh Patel",
+  city: "St. John's, NL",
+  role: "Photographer, videographer & web designer",
+  email: "akanaiyalalp@mun.ca",
+  instagram: "https://instagram.com/aksh.ae_",
+  url: "https://example.com", // REPLACE: point to your domain once you transfer the site (used for SEO/OG)
+  studioLine: "Photography, film & websites by Aksh Patel",
 };
 
 /* ── Hero ──────────────────────────────────────────────────────────────────── */
 
 export const hero = {
-  eyebrow: "[CITY] — WEB DESIGNER & PHOTOGRAPHER",
+  eyebrow: "ST. JOHN'S, NL — PHOTO · VIDEO · WEB",
   // The word wrapped in *asterisks* becomes the crimson "dual-lens" trigger.
-  headline: "I build websites and chase light — every project starts with a *story*.",
-  sub: "Design in the browser, stories through a lens. Two crafts, one eye.",
+  headline: "I capture the moments most people walk past — every project starts with a *story*.",
+  sub: "A photographer and filmmaker in St. John's, turning everyday moments into things worth keeping.",
   ctaPrimary: { label: "See the work", href: "/work" },
   ctaSecondary: { label: "Book a shoot", href: "/contact" },
-  // REPLACE: the two hero background images (web-design state / photography state)
-  webImage: "https://picsum.photos/id/180/1920/1280",
-  photoImage: "https://picsum.photos/id/1015/1920/1280",
+  // The two hero background images the *story* word crossfades between.
+  // The two backgrounds the *story* word crossfades between. Both are your
+  // own night long-exposures for now — moody, not stock. When you add a real
+  // web project later, you can point webImage at a screenshot of it.
+  webImage: "/photos/cars/Image-1.jpg",
+  photoImage: "/photos/portraits/harsh/Image-8.jpg",
 };
 
 /* ── Projects (web design) ─────────────────────────────────────────────────── */
@@ -52,6 +54,7 @@ export type Project = {
   stack: string;
   summary: string;
   story: string;
+  liveUrl?: string; // live site — embedded as a preview on the case study
   hero: string;
   images: [string, string];
   featured: boolean;
@@ -59,154 +62,97 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "aurelia-atelier",
-    title: "Aurelia Atelier",
-    client: "Aurelia",
+    slug: "wedding-invitation",
+    title: "Wedding Invitation",
+    client: "Sarah & James",
     year: "2026",
     tags: ["DESIGN", "DEV"],
     role: "Design & build",
-    stack: "Next.js · Tailwind · Sanity",
-    summary: "A hushed, editorial home for a slow-fashion atelier.",
+    stack: "Next.js · Tailwind · Framer Motion",
+    summary: "A digital wedding invitation that feels like opening the envelope.",
     story:
-      "Aurelia makes twelve garments a year, each one by hand. The site had to move at that same pace — generous whitespace, one photograph at a time, type that breathes. We cut everything that didn't serve the clothes and let the lookbook do the talking.",
-    hero: "https://picsum.photos/id/1011/1600/1000",
-    images: ["https://picsum.photos/id/1012/1600/1000", "https://picsum.photos/id/1013/1600/1000"],
+      "A wedding invite shouldn't feel like a form — it should feel like a moment. I designed and built this one to unfold like the real thing: names, date and story revealed with soft motion, RSVP built right in. One link, sent with love, kept forever.",
+    liveUrl: "https://wedding-invitation-steel-delta.vercel.app/wedding/sarah-james",
+    // REPLACE: swap for real screenshots of the site (e.g. /work/wedding-1.jpg)
+    hero: "https://picsum.photos/id/1073/1600/1000",
+    images: ["https://picsum.photos/id/106/1600/1000", "https://picsum.photos/id/152/1600/1000"],
     featured: true,
   },
   {
-    slug: "northbound-coffee",
-    title: "Northbound Coffee",
-    client: "Northbound",
+    slug: "india-gate-restaurant",
+    title: "India Gate Restaurant",
+    client: "India Gate",
     year: "2026",
-    tags: ["DESIGN", "DEV", "SHOP"],
-    role: "Design, build & product photography",
-    stack: "Next.js · Shopify · Tailwind",
-    summary: "Roastery e-commerce with photography shot in their own bar.",
-    story:
-      "Northbound didn't want a coffee site that looked like every other coffee site. So we shot their bags on the actual bar, steam and all, and built the store around those frames. Checkout in three taps. Sales doubled the first quarter.",
-    hero: "https://picsum.photos/id/1060/1600/1000",
-    images: ["https://picsum.photos/id/766/1600/1000", "https://picsum.photos/id/425/1600/1000"],
-    featured: true,
-  },
-  {
-    slug: "studio-marrow",
-    title: "Studio Marrow",
-    client: "Marrow Architects",
-    year: "2025",
     tags: ["DESIGN", "DEV"],
     role: "Design & build",
-    stack: "Next.js · Framer Motion",
-    summary: "An architecture portfolio that gets out of the buildings' way.",
-    story:
-      "Architects are the hardest clients — they see everything. Marrow wanted their concrete to feel heavy on screen. We used oversized imagery, a strict grid, and almost no words. The homepage is one building at a time, full-bleed, and nothing else.",
-    hero: "https://picsum.photos/id/1081/1600/1000",
-    images: ["https://picsum.photos/id/122/1600/1000", "https://picsum.photos/id/342/1600/1000"],
-    featured: true,
-  },
-  {
-    slug: "wildlane-journal",
-    title: "Wildlane Journal",
-    client: "Wildlane",
-    year: "2025",
-    tags: ["DESIGN", "DEV", "EDITORIAL"],
-    role: "Design & build",
-    stack: "Next.js · MDX · Tailwind",
-    summary: "A travel journal that reads like a well-worn paperback.",
-    story:
-      "Wildlane's writers file stories from places with no wifi. The reading experience had to honor that effort — big serif headlines, photography that bleeds off the page, and load times fast enough for a hostel connection. It's the site I open when I miss the road.",
-    hero: "https://picsum.photos/id/1036/1600/1000",
-    images: ["https://picsum.photos/id/1043/1600/1000", "https://picsum.photos/id/1018/1600/1000"],
-    featured: true,
-  },
-  {
-    slug: "harbor-and-pine",
-    title: "Harbor & Pine",
-    client: "Harbor & Pine Hotel",
-    year: "2025",
-    tags: ["DESIGN", "DEV"],
-    role: "Design, build & photography",
     stack: "Next.js · Tailwind",
-    summary: "A boutique hotel site shot and built in the same week.",
+    summary: "A restaurant site that makes you hungry before the menu loads.",
     story:
-      "Eleven rooms on a cold coastline. I stayed three nights, shot everything at golden hour, and designed the booking flow at their kitchen table. The site smells like salt and woodsmoke, or at least it tries to.",
-    hero: "https://picsum.photos/id/1040/1600/1000",
-    images: ["https://picsum.photos/id/164/1600/1000", "https://picsum.photos/id/1039/1600/1000"],
-    featured: false,
-  },
-  {
-    slug: "fable-records",
-    title: "Fable Records",
-    client: "Fable",
-    year: "2024",
-    tags: ["DESIGN", "DEV", "MOTION"],
-    role: "Design & build",
-    stack: "Next.js · Three.js · GSAP",
-    summary: "An indie label site that moves like a record spins.",
-    story:
-      "Fable signs bands nobody has heard of yet and believes in them loudly. The site needed that same energy — album art you can spin, liner notes you can actually read, and a release calendar that feels like a gig poster wall.",
-    hero: "https://picsum.photos/id/453/1600/1000",
-    images: ["https://picsum.photos/id/96/1600/1000", "https://picsum.photos/id/39/1600/1000"],
-    featured: false,
-  },
-  {
-    slug: "cartography-co",
-    title: "Cartography Co.",
-    client: "Cartography Co.",
-    year: "2024",
-    tags: ["DESIGN", "SHOP"],
-    role: "Design & art direction",
-    stack: "Shopify · Tailwind",
-    summary: "A print shop for people who still hang maps on walls.",
-    story:
-      "They screen-print maps of coastlines and mountain ranges in editions of fifty. We designed the shop like a flat-file drawer: browse by range, by coast, by decade. The product pages zoom close enough to see the ink texture.",
-    hero: "https://picsum.photos/id/211/1600/1000",
-    images: ["https://picsum.photos/id/28/1600/1000", "https://picsum.photos/id/29/1600/1000"],
-    featured: false,
-  },
-  {
-    slug: "the-grain-exchange",
-    title: "The Grain Exchange",
-    client: "Grain Exchange Bakery",
-    year: "2024",
-    tags: ["DESIGN", "DEV"],
-    role: "Design, build & photography",
-    stack: "Astro · Tailwind",
-    summary: "A bakery site warm enough to fog your screen.",
-    story:
-      "They bake forty loaves a day and sell out by ten. The site's whole job is telling you what came out of the oven this morning — one photo, one list, updated daily from a phone. Simple on purpose.",
-    hero: "https://picsum.photos/id/312/1600/1000",
-    images: ["https://picsum.photos/id/365/1600/1000", "https://picsum.photos/id/1080/1600/1000"],
-    featured: false,
+      "India Gate needed more than a menu online — it needed the warmth of the place. I built the site around rich food imagery, a menu you can actually browse on your phone, and clear calls to order and visit. Simple to update, fast to load, easy to crave.",
+    liveUrl: "https://india-gate-web.vercel.app/",
+    // REPLACE: swap for real screenshots of the site (e.g. /work/indiagate-1.jpg)
+    hero: "https://picsum.photos/id/292/1600/1000",
+    images: ["https://picsum.photos/id/365/1600/1000", "https://picsum.photos/id/429/1600/1000"],
+    featured: true,
   },
 ];
 
 /* ── Photography ───────────────────────────────────────────────────────────── */
 
-export type PhotoCategory = "Portrait" | "Landscape" | "Street" | "Events";
+// Filter categories = the folders you organize your shots into.
+// Rename these freely — the pills on /photography follow this list.
+export type PhotoCategory = "Portraits" | "Streets" | "Nature" | "Cars";
 
 export type Photo = {
   id: string;
-  src: string;
-  alt: string;
+  src: string; // local file in /public/photos — swap freely
+  alt: string; // EDIT: describe each shot for accessibility + SEO
   category: PhotoCategory;
-  exif: string; // shown in JetBrains Mono under the photo
+  exif: string; // real camera EXIF, shown in mono under the photo
   w: number;
   h: number;
+  featured?: boolean; // featured shots appear in the /work sphere gallery
 };
 
+// Real images from /public/photos with authentic EXIF (Sony ZV-E10).
+// The `alt` text is my best guess per shot — tweak to match what's actually
+// in frame. Add or remove entries here to grow/shrink the gallery.
 export const photos: Photo[] = [
-  { id: "ph-01", src: "https://picsum.photos/id/1005/900/1200", alt: "Portrait of a man in window light", category: "Portrait", exif: "f/1.8 · 85mm · ISO 200", w: 900, h: 1200 },
-  { id: "ph-02", src: "https://picsum.photos/id/1015/1200/800", alt: "River winding through a mountain valley", category: "Landscape", exif: "f/8 · 24mm · ISO 100", w: 1200, h: 800 },
-  { id: "ph-03", src: "https://picsum.photos/id/1062/900/1200", alt: "Dog waiting at a rainy crosswalk", category: "Street", exif: "f/2.8 · 35mm · ISO 800", w: 900, h: 1200 },
-  { id: "ph-04", src: "https://picsum.photos/id/1027/900/1200", alt: "Portrait of a woman with freckles", category: "Portrait", exif: "f/2 · 50mm · ISO 400", w: 900, h: 1200 },
-  { id: "ph-05", src: "https://picsum.photos/id/1016/1200/800", alt: "Canyon walls at dusk", category: "Landscape", exif: "f/11 · 16mm · ISO 100", w: 1200, h: 800 },
-  { id: "ph-06", src: "https://picsum.photos/id/1083/1200/800", alt: "First dance at a barn wedding", category: "Events", exif: "f/1.8 · 35mm · ISO 1600", w: 1200, h: 800 },
-  { id: "ph-07", src: "https://picsum.photos/id/21/1200/800", alt: "Shoes on cobblestone, morning market", category: "Street", exif: "f/4 · 28mm · ISO 400", w: 1200, h: 800 },
-  { id: "ph-08", src: "https://picsum.photos/id/177/1200/800", alt: "Fog rolling over a pine ridge", category: "Landscape", exif: "f/8 · 70mm · ISO 100", w: 1200, h: 800 },
-  { id: "ph-09", src: "https://picsum.photos/id/338/900/1200", alt: "Bride laughing during the toast", category: "Events", exif: "f/2 · 85mm · ISO 800", w: 900, h: 1200 },
-  { id: "ph-10", src: "https://picsum.photos/id/453/1200/800", alt: "Neon reflections after rain", category: "Street", exif: "f/1.4 · 35mm · ISO 3200", w: 1200, h: 800 },
-  { id: "ph-11", src: "https://picsum.photos/id/823/900/1200", alt: "Portrait in late-summer field", category: "Portrait", exif: "f/1.8 · 135mm · ISO 100", w: 900, h: 1200 },
-  { id: "ph-12", src: "https://picsum.photos/id/1052/1200/800", alt: "Confetti at the closing set", category: "Events", exif: "f/2.8 · 24mm · ISO 1600", w: 1200, h: 800 },
+  // ── Portraits ──
+  { id: "ph-p1", src: "/photos/portraits/Image-1.jpg", alt: "Studio portrait in warm window light", category: "Portraits", exif: "f/7.1 · 50mm · ISO 100", w: 3718, h: 4648, featured: true },
+  { id: "ph-p2", src: "/photos/portraits/Image-9.jpg", alt: "Portrait against a seamless backdrop", category: "Portraits", exif: "f/5.6 · 50mm · ISO 100", w: 4000, h: 5328, featured: true },
+  { id: "ph-p3", src: "/photos/portraits/Image-4.jpg", alt: "Relaxed portrait in soft side light", category: "Portraits", exif: "f/5.6 · 39mm · ISO 100", w: 5142, h: 3860 },
+  { id: "ph-p4", src: "/photos/portraits/Image-10.jpg", alt: "Portrait in even studio light", category: "Portraits", exif: "f/5.6 · 38mm · ISO 100", w: 3857, h: 5138 },
+  { id: "ph-p5", src: "/photos/portraits/Image-12.jpg", alt: "Candid portrait, natural expression", category: "Portraits", exif: "f/5.6 · 41mm · ISO 100", w: 5328, h: 4000, featured: true },
+  { id: "ph-v1", src: "/photos/portraits/vedant/Image-2.jpg", alt: "Vedant — outdoor portrait at golden hour", category: "Portraits", exif: "f/8 · 50mm · ISO 160", w: 4000, h: 5000, featured: true },
+  { id: "ph-v2", src: "/photos/portraits/vedant/Image-9.jpg", alt: "Vedant — environmental portrait", category: "Portraits", exif: "f/6.3 · 33mm · ISO 125", w: 5000, h: 4000 },
+  { id: "ph-v3", src: "/photos/portraits/vedant/Image-4.jpg", alt: "Vedant — standing portrait, open sky", category: "Portraits", exif: "f/8 · 50mm · ISO 160", w: 4000, h: 5000 },
+  { id: "ph-v4", src: "/photos/portraits/vedant/Image-8.jpg", alt: "Vedant — candid moment outdoors", category: "Portraits", exif: "f/8 · 33mm · ISO 160", w: 4000, h: 5000, featured: true },
+  { id: "ph-h1", src: "/photos/portraits/harsh/Image-8.jpg", alt: "Harsh — golden-hour portrait, wide frame", category: "Portraits", exif: "f/8 · 33mm · ISO 125", w: 6000, h: 4000, featured: true },
+  { id: "ph-h2", src: "/photos/portraits/harsh/Image-12.jpg", alt: "Harsh — full-length outdoor portrait", category: "Portraits", exif: "f/8 · 50mm · ISO 125", w: 4000, h: 6000 },
+  { id: "ph-h3", src: "/photos/portraits/harsh/Image-1.jpg", alt: "Harsh — relaxed portrait in daylight", category: "Portraits", exif: "f/8 · 50mm · ISO 160", w: 5000, h: 4000 },
+  { id: "ph-h4", src: "/photos/portraits/harsh/Image-4.jpg", alt: "Harsh — portrait against open landscape", category: "Portraits", exif: "f/8 · 46mm · ISO 160", w: 4000, h: 5176, featured: true },
+
+  // ── Streets ── (the red-car long exposures live under Cars — same files)
+  { id: "ph-s2", src: "/photos/streets/Image-10.jpg", alt: "Traffic trails after dark, long exposure", category: "Streets", exif: "f/25 · 21mm · ISO 125 · 1/4s", w: 5328, h: 4000, featured: true },
+  { id: "ph-s4", src: "/photos/streets/Image-8.jpg", alt: "Quiet street corner in afternoon light", category: "Streets", exif: "f/5.6 · 50mm · ISO 100", w: 4000, h: 5000, featured: true },
+  { id: "ph-s5", src: "/photos/streets/Image-5.jpg", alt: "Passerby caught in warm afternoon light", category: "Streets", exif: "f/5.6 · 50mm · ISO 100", w: 3052, h: 3815 },
+  { id: "ph-s6", src: "/photos/streets/Image-7.jpg", alt: "Tall vertical street scene", category: "Streets", exif: "f/1.8 · ISO 40", w: 5846, h: 7795 },
+  { id: "ph-s7", src: "/photos/streets/Image-16.jpg", alt: "Vertical street frame, shallow depth", category: "Streets", exif: "f/1.8 · ISO 25", w: 3829, h: 5159, featured: true },
+  { id: "ph-s8", src: "/photos/streets/Image-re-1.jpg", alt: "Street scene, wide crop", category: "Streets", exif: "f/1.8 · ISO 50", w: 7470, h: 7991 },
+
+  // ── Nature ──
+  { id: "ph-n1", src: "/photos/nature/Image-14.jpg", alt: "Wide mountain vista", category: "Nature", exif: "f/8 · 17mm · ISO 125", w: 5000, h: 4000, featured: true },
+  { id: "ph-n2", src: "/photos/nature/Image-3.jpg", alt: "Mountain ridgeline at midday", category: "Nature", exif: "f/8 · 23mm · ISO 160", w: 5328, h: 4000, featured: true },
+  { id: "ph-n3", src: "/photos/nature/Image-8.jpg", alt: "Distant peaks, telephoto compression", category: "Nature", exif: "f/8 · 50mm · ISO 160", w: 5328, h: 4000, featured: true },
+  { id: "ph-n4", src: "/photos/nature/Image-7.jpg", alt: "Valley under a moving sky", category: "Nature", exif: "f/8 · 34mm · ISO 160", w: 5328, h: 4000 },
+  { id: "ph-n5", src: "/photos/nature/Image-13.jpg", alt: "Rolling hills in soft haze", category: "Nature", exif: "f/8 · 46mm · ISO 125", w: 5000, h: 4000 },
+  { id: "ph-n6", src: "/photos/nature/Image-6.jpg", alt: "Golden light across the slopes", category: "Nature", exif: "f/11 · 50mm · ISO 160", w: 5328, h: 4000 },
+
+  // ── Cars ──
+  { id: "ph-c1", src: "/photos/cars/Image-1.jpg", alt: "Parked car, downtown long exposure", category: "Cars", exif: "f/25 · 23mm · ISO 125 · 1/3s", w: 5327, h: 3999, featured: true },
+  { id: "ph-c2", src: "/photos/cars/Image-2.jpg", alt: "Car detail under city lights", category: "Cars", exif: "f/29 · 40mm · ISO 125 · 1/3s", w: 3499, h: 4661 },
+  { id: "ph-c3", src: "/photos/cars/Downtown.png", alt: "Downtown at blue hour", category: "Cars", exif: "Blue hour · long exposure", w: 1080, h: 1350 },
 ];
 
 /* ── Spherical work gallery (mix of projects + photographs) ────────────────── */
@@ -231,148 +177,121 @@ export const galleryItems: GalleryItem[] = [
     image: p.hero.replace("/1600/1000", "/800/500"),
     href: `/work/${p.slug}`,
   })),
-  ...photos.map((p) => ({
-    id: p.id,
-    caption: p.category.toUpperCase(),
-    title: p.alt,
-    tags: ["PHOTO", p.category.toUpperCase()],
-    year: "2025",
-    image: p.src.replace(/\/\d+\/\d+$/, p.w > p.h ? "/800/500" : "/500/800"),
-    href: "/photography",
-  })),
+  // Only featured photos ride the sphere, kept ~24 cards total for 60fps.
+  // Large local files are downscaled through the Next image optimizer so
+  // Three.js loads a ~750px texture instead of the 5000px original.
+  ...photos
+    .filter((p) => p.featured)
+    .map((p) => ({
+      id: p.id,
+      caption: p.category.toUpperCase(),
+      title: p.alt,
+      tags: ["PHOTO", p.category.toUpperCase()],
+      year: "2025",
+      image: `/_next/image?url=${encodeURIComponent(p.src)}&w=750&q=70`,
+      href: "/photography",
+    })),
 ];
 
 /* ── Services ──────────────────────────────────────────────────────────────── */
 
 export type ServicePackage = {
   name: string;
-  price: string; // owner edits freely, e.g. "from $1,500"
+  price: string; // TODO: set your rates here, e.g. "from $150". "On request" for now.
   timeline: string;
   includes: string[];
 };
 
+// Four things Aksh offers. Pricing is "On request" until you settle on rates —
+// just replace the `price` strings (e.g. "from $150") when you're ready.
 export const services = {
   snapshot: [
     {
-      title: "Web Design",
-      line: "Sites that feel hand-made because they are.",
-      price: "from $1,500",
-    },
-    {
       title: "Photography",
-      line: "Portraits, weddings, brands — honest light, no stiff poses.",
-      price: "from $300",
+      line: "Portraits, events, street and the outdoors — real moments, honest light.",
+      price: "On request",
     },
     {
-      title: "Brand + Content",
-      line: "The full story: identity, site, and the photos to fill it.",
-      price: "from $2,500",
+      title: "Videography",
+      line: "Events, reels and short films that actually feel like the day.",
+      price: "On request",
+    },
+    {
+      title: "Social Media",
+      line: "Content and a plan to keep your feed alive and growing.",
+      price: "On request",
+    },
+    {
+      title: "Web Design",
+      line: "Clean, fast websites to show your work off properly.",
+      price: "On request",
     },
   ],
-  web: [
+  offerings: [
     {
-      name: "Landing Page",
-      price: "from $1,500",
-      timeline: "2–3 weeks",
+      name: "Photography",
+      price: "On request",
+      timeline: "Portraits · Events · Outdoor",
       includes: [
-        "One-page design & build (Next.js)",
-        "Copy polish & content structure",
-        "Mobile-first, tested on real devices",
-        "Basic SEO & analytics setup",
-        "30 days of post-launch tweaks",
+        "A quick chat to plan the look and locations",
+        "The shoot — relaxed, no stiff poses",
+        "Hand-edited high-res images",
+        "Private online gallery to share",
+        "Fast turnaround, print-ready files",
       ],
     },
     {
-      name: "Full Site",
-      price: "from $4,000",
-      timeline: "4–6 weeks",
+      name: "Videography",
+      price: "On request",
+      timeline: "Events · Reels · Short films",
       includes: [
-        "Up to 6 pages, designed & built",
-        "CMS so you can edit everything",
-        "Motion & interaction design",
-        "Performance & accessibility pass",
-        "60 days of post-launch support",
+        "Concept and shot planning together",
+        "Filming on the day",
+        "Edit with music, pacing and color",
+        "Short cuts sized for social",
+        "Raw footage on request",
       ],
     },
     {
-      name: "Site + Brand",
-      price: "from $7,500",
-      timeline: "6–9 weeks",
+      name: "Social Media",
+      price: "On request",
+      timeline: "Monthly · Per campaign",
       includes: [
-        "Everything in Full Site",
-        "Logo, type & color system",
-        "Brand photography half-day",
-        "Social & OG template kit",
-        "Launch-day hand-holding included",
-      ],
-    },
-  ] as ServicePackage[],
-  photo: [
-    {
-      name: "Portrait Session",
-      price: "from $300",
-      timeline: "1 hour · 20+ finals",
-      includes: [
-        "Location scouting together",
-        "1 hour of shooting, no rush",
-        "20+ edited high-res images",
-        "Private online gallery",
-        "Delivery within 5 days",
+        "Simple content plan for the month",
+        "Photo & video shot for feed and reels",
+        "Captions, hashtags and scheduling",
+        "Consistent posting, on-brand look",
+        "A monthly check-in on what's working",
       ],
     },
     {
-      name: "Event Half-Day",
-      price: "from $900",
-      timeline: "4 hours · 150+ finals",
+      name: "Web Design",
+      price: "On request",
+      timeline: "Landing page · Full site",
       includes: [
-        "4 hours of coverage",
-        "150+ edited images",
-        "Sneak peek within 48 hours",
-        "Private gallery for guests",
-        "Print rights included",
-      ],
-    },
-    {
-      name: "Brand Shoot",
-      price: "from $1,800",
-      timeline: "Full day · full library",
-      includes: [
-        "Creative direction & shot list",
-        "Full-day shoot, 2 locations",
-        "Full commercial usage rights",
-        "Library sized for web & social",
-        "Quarterly refresh option",
+        "Design that fits your work",
+        "Built responsive and fast (Next.js)",
+        "Your photos and video, front and center",
+        "Basic SEO so people find you",
+        "Handover with everything documented",
       ],
     },
   ] as ServicePackage[],
 };
 
 export const process = [
-  { step: "01", name: "Discover", text: "Coffee first. Then we talk about your project — what it's for, who it's for, and what winning looks like." },
-  { step: "02", name: "Design", text: "Moodboards, type tests, and one strong direction. You see the real thing early, not a mystery reveal." },
-  { step: "03", name: "Build / Shoot", text: "Code gets written, shutters get pressed. You get progress links and sneak peeks the whole way." },
-  { step: "04", name: "Deliver", text: "Launch day or gallery day. Everything handed over, documented, and yours — plus support after." },
+  { step: "01", name: "Talk", text: "We start with a chat — what you need, who it's for, and the feeling you're going for. No pressure." },
+  { step: "02", name: "Plan", text: "References, locations and a clear direction, so nothing on the day is a surprise." },
+  { step: "03", name: "Create", text: "The shoot, the film, or the build. You get sneak peeks and progress the whole way through." },
+  { step: "04", name: "Deliver", text: "Everything edited, handed over and yours to keep — plus a hand if you need anything after." },
 ];
 
 /* ── Testimonials ──────────────────────────────────────────────────────────── */
 
-export const testimonials = [
-  {
-    quote: "He asked better questions than agencies twice the price. The site paid for itself in a month — and the photos still stop me mid-scroll.",
-    name: "Mara Ellison",
-    role: "Founder, Northbound Coffee",
-  },
-  {
-    quote: "We hired a web designer and somehow got a documentary photographer too. Our architecture finally looks online the way it feels in person.",
-    name: "Daniel Reyes",
-    role: "Partner, Studio Marrow",
-  },
-  {
-    quote: "Our wedding gallery made my mother cry, twice. Then he rebuilt my studio's website and my bookings tripled. I don't understand it either.",
-    name: "Priya Nair",
-    role: "Ceramicist & very happy bride",
-  },
-];
+// No testimonials yet — add them here as you collect them and the section
+// will reappear on the home page automatically:
+//   { quote: "…", name: "Client name", role: "What they do" }
+export const testimonials: { quote: string; name: string; role: string }[] = [];
 
 /* ── Journal ───────────────────────────────────────────────────────────────── */
 
@@ -433,32 +352,34 @@ export const posts: Post[] = [
 /* ── About ─────────────────────────────────────────────────────────────────── */
 
 export const about = {
-  portrait: "https://picsum.photos/id/64/900/1200", // REPLACE: your portrait
+  portrait: "/photos/aksh.jpg", // your photo (4000x3000)
   teaser:
-    "I fell into web design through a camera lens — I built my first site just to hang my photographs somewhere. Fifteen years later I still do both, and I still believe every pixel should earn its place in the story.",
+    "I've had a picture in my head of the kind of work I wanted to make for as long as I can remember — photography and video that hold on to the moments most people walk right past. This is me chasing that, one frame at a time.",
   story: [
-    "I didn't choose between design and photography — the camera chose first. I was nineteen, borrowing my uncle's beat-up DSLR, shooting everything that stood still long enough. When I ran out of walls to hang prints on, I taught myself HTML to build a place for them online. That scrappy little gallery was my first website, and I was hooked twice over.",
-    "Fifteen years on, the two crafts have grown into one. Photography taught me to see — light, timing, what to leave out of the frame. Design taught me to build — structure, rhythm, how a story unfolds as you scroll. Every project I take on uses both eyes.",
-    "I believe visual stories beat clever slogans, that whitespace is a feature, and that the best work happens when clients feel like collaborators. If you've got a story worth telling, I'd love to help you tell it — in pixels, in light, or both.",
+    "I'm Aksh, a photographer and filmmaker based in St. John's, Newfoundland. The creative pull was there from the start — before I really knew what I was doing, I knew the kind of images and films I wanted to make. So I picked up a camera and started, and I haven't put it down since.",
+    "What I love most is capturing the small things: the moments and the little events that slip by unnoticed. A look, a bit of light, the in-between seconds nobody thinks to photograph. Those are the frames I chase — the ones that turn an ordinary day into something you'll want to keep.",
+    "I'm still early in this, and honestly that's the exciting part. I get a little better every time I try something new and put in the practice, and I want to build a whole career out of that. If you've got a moment, an event, or an idea worth capturing, I'd love to help you hold onto it.",
   ],
-  tools: ["Figma", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Three.js", "Lightroom", "Capture One", "Photoshop", "DaVinci Resolve"],
-  gear: ["Fujifilm X-T5 (daily carry)", "Canon R6 II (events)", "35mm f/1.4 — the one lens", "85mm f/1.8 (portraits)", "16-35mm f/4 (landscapes)", "A tripod older than my career"],
+  // Confirm/adjust — pulled from your file EXIF (Sony ZV-E10).
+  tools: ["Sony ZV-E10", "Lightroom", "Premiere Pro", "DaVinci Resolve", "Photoshop", "Canva", "Figma", "Meta Business Suite"],
+  gear: ["Sony ZV-E10 — my main body", "Sony E 16–50mm kit lens", "Samsung Galaxy S25 FE — always in my pocket", "A tripod for the long exposures"],
+  // Light, honest milestones — edit the years/text to match your story.
   milestones: [
-    { year: "2011", text: "Borrowed a camera. Never really gave it back." },
-    { year: "2015", text: "First paid website — a bakery, traded partly for bread." },
-    { year: "2020", text: "Went full-time freelance. Terrifying. Correct." },
-    { year: "2025", text: "100th project shipped, 40th wedding shot, zero regrets." },
+    { year: "—", text: "Knew I wanted to make images and film, long before I owned a camera." },
+    { year: "—", text: "Picked up my first camera and started shooting everything." },
+    { year: "—", text: "Began shooting portraits and events for friends like Harsh and Vedant." },
+    { year: "2026", text: "Launched this portfolio — the start of the career I'm building." },
   ],
 };
 
 /* ── Contact ───────────────────────────────────────────────────────────────── */
 
 export const contact = {
-  headline: "Got a story to tell?",
+  headline: "Got a moment to capture?",
   invitation:
-    "Tell me what you're making. A site, a wedding, a brand, a wild idea — I read every message myself and reply within two days. Coffee first. Then we talk about your project.",
-  projectTypes: ["Web design", "Photography", "Both"],
-  budgets: ["Under $1,000", "$1,000 – $3,000", "$3,000 – $7,500", "$7,500+", "Not sure yet"],
+    "Tell me what you're planning — a shoot, an event, a video, a website, or just an idea you're kicking around. I read every message myself and I'll get back to you quickly. No pressure, let's just talk.",
+  projectTypes: ["Photography", "Videography", "Social media", "Web design", "Not sure yet"],
+  budgets: ["Under $250", "$250 – $500", "$500 – $1,000", "$1,000+", "Not sure yet"],
 };
 
 /* ── Navigation & footer ───────────────────────────────────────────────────── */

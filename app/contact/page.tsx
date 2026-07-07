@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instagram, Mail, Palette } from "lucide-react";
+import { Instagram, Mail } from "lucide-react";
 import { contact, site } from "@/data/content";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
@@ -40,15 +40,7 @@ export default function ContactPage() {
               className="group flex items-center gap-3 font-mono text-sm transition-colors hover:text-accent"
             >
               <Instagram size={16} className="text-accent" />
-              Instagram
-            </a>
-            <a
-              href={site.behance}
-              rel="noopener noreferrer"
-              className="group flex items-center gap-3 font-mono text-sm transition-colors hover:text-accent"
-            >
-              <Palette size={16} className="text-accent" />
-              Behance
+              @aksh.ae_
             </a>
           </Reveal>
 

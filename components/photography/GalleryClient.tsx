@@ -7,7 +7,7 @@ import { photos, type PhotoCategory } from "@/data/content";
 import Lightbox from "@/components/Lightbox";
 import Reveal from "@/components/Reveal";
 
-const filters = ["All", "Portrait", "Landscape", "Street", "Events"] as const;
+const filters = ["All", "Portraits", "Streets", "Nature", "Cars"] as const;
 
 export default function GalleryClient() {
   const [filter, setFilter] = useState<(typeof filters)[number]>("All");

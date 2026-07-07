@@ -43,7 +43,9 @@ export default async function CaseStudyPage({ params }: Params) {
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-bg/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent" />
+        {/* subtle top band so the nav stays readable over bright photos */}
+        <div className="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-bg via-bg/55 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-[1600px] px-6 pb-12 md:px-12">
           <SectionHeading as="h1" size="display-1" title={project.title} eyebrow={project.summary} />
         </div>
@@ -70,6 +72,32 @@ export default async function CaseStudyPage({ params }: Params) {
             {project.story}
           </p>
         </Reveal>
+
+        {/* Live site embedded — the real thing, not a screenshot */}
+        {project.liveUrl && (
+          <Reveal className="mt-20">
+            <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-muted">
+              Live preview
+            </p>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-sm border border-line bg-surface sm:aspect-[16/10]">
+              <iframe
+                src={project.liveUrl}
+                title={`${project.title} — live site preview`}
+                loading="lazy"
+                className="h-full w-full"
+              />
+            </div>
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+            >
+              Visit the live site
+              <ArrowRight size={16} />
+            </a>
+          </Reveal>
+        )}
 
         <div className="mt-20 grid gap-8 md:grid-cols-2">
           {project.images.map((src, i) => (

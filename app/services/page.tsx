@@ -7,7 +7,7 @@ import Button from "@/components/Button";
 
 export const metadata: Metadata = {
   title: "Services",
-  description: "Web design and photography packages — clear pricing, no surprises.",
+  description: "Photography, videography, social media and web design in St. John's.",
 };
 
 function PackageCard({ pkg, delay }: { pkg: ServicePackage; delay: number }) {
@@ -47,25 +47,16 @@ export default function ServicesPage() {
         title="Pick your *story*"
       />
       <p className="mt-6 max-w-xl text-muted">
-        Clear packages, honest pricing, no surprises halfway through. Every
-        project starts with a conversation — coffee first.
+        Four ways I can help — from a single shoot to your whole online
+        presence. Still working out set prices, so for now every project
+        starts with a quick conversation.
       </p>
 
-      {/* Web design packages */}
+      {/* What I offer */}
       <section className="mt-24">
-        <SectionHeading eyebrow="01 — Web design" title="Websites" />
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {services.web.map((pkg, i) => (
-            <PackageCard key={pkg.name} pkg={pkg} delay={i * 0.08} />
-          ))}
-        </div>
-      </section>
-
-      {/* Photography packages */}
-      <section className="mt-24">
-        <SectionHeading eyebrow="02 — Photography" title="Shoots" />
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {services.photo.map((pkg, i) => (
+        <SectionHeading eyebrow="What I do" title="How I can *help*" />
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {services.offerings.map((pkg, i) => (
             <PackageCard key={pkg.name} pkg={pkg} delay={i * 0.08} />
           ))}
         </div>

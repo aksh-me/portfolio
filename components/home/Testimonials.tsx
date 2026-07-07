@@ -10,9 +10,13 @@ export default function Testimonials() {
   const reduce = useReducedMotion();
 
   useEffect(() => {
+    if (testimonials.length === 0) return;
     const id = setInterval(() => setIndex((i) => (i + 1) % testimonials.length), 6000);
     return () => clearInterval(id);
   }, []);
+
+  // Nothing to show until the first testimonial is added in data/content.ts
+  if (testimonials.length === 0) return null;
 
   const t = testimonials[index];
 

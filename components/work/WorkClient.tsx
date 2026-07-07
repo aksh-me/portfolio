@@ -83,7 +83,7 @@ export default function WorkClient() {
           <Link
             key={item.href}
             href={item.href}
-            className={`rounded-full px-4 py-2 text-sm transition-colors ${
+            className={`rounded-full px-3 py-2 text-xs transition-colors sm:px-4 sm:text-sm ${
               item.href === "/work" ? "bg-accent text-white" : "text-muted hover:text-ink"
             }`}
           >
@@ -93,7 +93,8 @@ export default function WorkClient() {
       </nav>
 
       {/* view toggles, bottom-left */}
-      <div className="pointer-events-auto fixed bottom-6 left-6 z-20 flex items-center gap-1 rounded-full border border-line bg-surface/80 p-1.5 backdrop-blur-xl md:left-10">
+      {/* stacked above the pill nav on phones, bottom-left on desktop */}
+      <div className="pointer-events-auto fixed bottom-[4.75rem] left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full border border-line bg-surface/80 p-1.5 backdrop-blur-xl md:bottom-6 md:left-10 md:translate-x-0">
         <button
           type="button"
           onClick={() => setMode("sphere")}
