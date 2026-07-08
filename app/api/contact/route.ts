@@ -1,16 +1,21 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { site } from "@/data/content";
+import { ownerEmail, clientEmail } from "@/lib/emails";
 
 /**
- * Contact form backend (Resend).
+ * Contact form backend (Resend). Sends TWO emails per submission:
+ *   1. An enquiry notification to the owner (critical — failure = error).
+ *   2. A branded auto-reply to the visitor (best-effort — never blocks #1).
  *
  * Env vars (set these in Vercel → Project → Settings → Environment Variables):
  *   RESEND_API_KEY      required — from https://resend.com/api-keys
- *   CONTACT_TO_EMAIL    optional — where submissions land (default: site.email)
+ *   CONTACT_TO_EMAIL    optional — where enquiries land (default: site.email)
  *   CONTACT_FROM_EMAIL  optional — sender (default: Resend's onboarding sender,
- *                       which works with no domain setup as long as TO_EMAIL is
- *                       the address you signed up to Resend with)
+ *                       which works with no domain setup, but can only deliver
+ *                       to your Resend signup address. The visitor auto-reply
+ *                       only reaches arbitrary inboxes once you verify a domain
+ *                       in Resend — until then it's skipped gracefully.)
  *
  * Spam protection: a hidden honeypot field + a minimum fill-time check. Both
  * are silently accepted (200) so bots get no signal, but no email is sent.
@@ -18,20 +23,12 @@ import { site } from "@/data/content";
 
 export const runtime = "nodejs";
 
-const FROM = process.env.CONTACT_FROM_EMAIL || "Portfolio <onboarding@resend.dev>";
+const FROM = process.env.CONTACT_FROM_EMAIL || "Aksh Patel <onboarding@resend.dev>";
 const TO = process.env.CONTACT_TO_EMAIL || site.email;
 const MIN_FILL_MS = 2500; // anything faster than this is almost certainly a bot
 
 function isEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
-
-function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 export async function POST(request: Request) {
@@ -76,41 +73,46 @@ export async function POST(request: Request) {
   }
 
   const resend = new Resend(apiKey);
+  const enquiry = { name, email, projectType, budget, message };
 
   try {
+    // 1. Owner notification — this one must succeed.
+    const owner = ownerEmail(enquiry);
     const { error } = await resend.emails.send({
       from: FROM,
       to: [TO],
-      replyTo: email, // reply goes straight to the sender
-      subject: `New enquiry — ${projectType || "Portfolio"} — ${name}`,
-      text: [
-        `Name: ${name}`,
-        `Email: ${email}`,
-        `Project type: ${projectType || "—"}`,
-        `Budget: ${budget || "—"}`,
-        "",
-        message,
-      ].join("\n"),
-      html: `
-        <div style="font-family:system-ui,sans-serif;line-height:1.6;color:#121212">
-          <h2 style="margin:0 0 16px">New enquiry from your portfolio</h2>
-          <p style="margin:0 0 4px"><strong>Name:</strong> ${escapeHtml(name)}</p>
-          <p style="margin:0 0 4px"><strong>Email:</strong> ${escapeHtml(email)}</p>
-          <p style="margin:0 0 4px"><strong>Project type:</strong> ${escapeHtml(projectType) || "—"}</p>
-          <p style="margin:0 0 16px"><strong>Budget:</strong> ${escapeHtml(budget) || "—"}</p>
-          <p style="white-space:pre-wrap;border-top:1px solid #eee;padding-top:16px">${escapeHtml(message)}</p>
-        </div>
-      `,
+      replyTo: email, // hitting "reply" reaches the visitor directly
+      subject: owner.subject,
+      html: owner.html,
+      text: owner.text,
     });
 
     if (error) {
-      console.error("Resend send error:", error);
+      console.error("Resend owner-email error:", error);
       return NextResponse.json({ error: "Something went wrong sending your message." }, { status: 502 });
     }
-
-    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Contact route error:", err);
     return NextResponse.json({ error: "Something went wrong sending your message." }, { status: 500 });
   }
+
+  // 2. Auto-reply to the visitor — best-effort. Requires a verified domain to
+  //    reach arbitrary inboxes; if it fails we still report success, since the
+  //    owner already got the enquiry.
+  try {
+    const reply = clientEmail(enquiry);
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: [email],
+      replyTo: TO, // if they reply to the confirmation, it reaches the owner
+      subject: reply.subject,
+      html: reply.html,
+      text: reply.text,
+    });
+    if (error) console.warn("Auto-reply not sent (verify a domain in Resend to enable):", error);
+  } catch (err) {
+    console.warn("Auto-reply threw:", err);
+  }
+
+  return NextResponse.json({ ok: true });
 }
