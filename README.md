@@ -48,12 +48,60 @@ All images are `https://picsum.photos` placeholders, marked with
 `/work/aurelia-hero.jpg`. `next/image` handles the rest. If you keep any
 remote images, add their host to `next.config.mjs → images.remotePatterns`.
 
-## Hooking up the contact form
+## Contact form (Resend)
 
-The form currently logs to the console and shows the success state. To make
-it real, open `components/contact/ContactForm.tsx` — the comment block inside
-`onSubmit` explains both options (Formspree in ~1 minute, or Resend via an
-API route).
+The form posts to `app/api/contact/route.ts`, which emails you via
+[Resend](https://resend.com). It includes validation, loading/error states,
+and spam protection (hidden honeypot + minimum fill-time check).
+
+**Setup (~2 minutes, free):**
+
+1. Sign up at [resend.com](https://resend.com) **using the email address where
+   you want to receive submissions** (on the free tier without a verified
+   domain, Resend can only deliver to your sign-up address).
+2. Create an API key at [resend.com/api-keys](https://resend.com/api-keys).
+3. In Vercel → your project → **Settings → Environment Variables**, add:
+   - `RESEND_API_KEY` — the key from step 2
+   - `CONTACT_TO_EMAIL` — your receiving email (optional; defaults to the one in
+     `data/content.ts`)
+4. Redeploy. Done — messages now land in your inbox, and replying goes straight
+   to the sender.
+
+To send from your own domain later, verify it in Resend and set
+`CONTACT_FROM_EMAIL` (e.g. `Aksh Patel <hello@yourdomain.com>`).
+
+See `.env.example` for all variables. For local testing, copy it to
+`.env.local` and fill in the values.
+
+## SEO & Google Search Console
+
+Already wired up:
+
+- **`/sitemap.xml`** — generated from your routes (`app/sitemap.ts`).
+- **`/robots.txt`** — allows crawling, points to the sitemap (`app/robots.ts`).
+- **Metadata** — titles, descriptions, canonical, Open Graph and Twitter cards,
+  and per-page metadata via the Next.js Metadata API.
+
+**Manual steps you need to do:**
+
+1. **Set your real URL.** Add `NEXT_PUBLIC_SITE_URL` in Vercel (e.g.
+   `https://your-domain.com`, no trailing slash). This makes the sitemap,
+   canonical tags and social previews use the correct address.
+2. **Verify in Search Console.** Go to
+   [search.google.com/search-console](https://search.google.com/search-console),
+   add your site as a **URL-prefix** property using your full URL. Choose the
+   **HTML tag** method, copy the `content` value it gives you, and add it in
+   Vercel as `GOOGLE_SITE_VERIFICATION`. Redeploy, then click **Verify**.
+   (If you use a custom domain, the **Domain** property + DNS TXT record is even
+   better.)
+3. **Submit your sitemap.** In Search Console → **Sitemaps**, enter `sitemap.xml`
+   and submit.
+4. **Request indexing** (optional, speeds things up): use the **URL Inspection**
+   tool on your homepage and click **Request indexing**.
+
+Indexing readiness checklist (all satisfied): pages are server-rendered with
+real content, none are `noindex`, every public route is in the sitemap, images
+have `alt` text, and there are no crawl blocks except `/api/`.
 
 ## The sphere gallery (`/work`)
 
@@ -74,5 +122,6 @@ component follows. The crimson accent is `--accent`.
 1. Push the repo to GitHub.
 2. [vercel.com/new](https://vercel.com/new) → import the repo → deploy
    (zero config needed).
-3. Set `site.url` in `data/content.ts` to your live domain so Open Graph
-   tags and the sitemap point to the right place.
+3. Add the environment variables from `.env.example` (contact form + SEO URL).
+4. Set `NEXT_PUBLIC_SITE_URL` to your live domain so Open Graph tags and the
+   sitemap point to the right place.

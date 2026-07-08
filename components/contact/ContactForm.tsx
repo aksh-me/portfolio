@@ -1,36 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Loader2, AlertCircle } from "lucide-react";
 import { contact } from "@/data/content";
 import Button from "@/components/Button";
 
 const inputClasses =
   "w-full border-b border-line bg-transparent px-0 py-3 text-sm outline-none transition-colors placeholder:text-muted focus:border-accent";
 
+type Status = "idle" | "sending" | "sent" | "error";
+
+function isEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 export default function ContactForm() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [error, setError] = useState("");
+  const renderedAt = useRef(Date.now()); // used for the anti-bot timing check
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    renderedAt.current = Date.now();
+  }, []);
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+    if (status === "sending") return; // guard against double submit
+    setError("");
 
-    /* ─────────────────────────────────────────────────────────────────
-       PLUG IN A REAL BACKEND HERE.
-       Easiest options:
-       - Formspree: change <form> to
-           <form action="https://formspree.io/f/YOUR_ID" method="POST">
-         and remove this handler entirely.
-       - Resend / API route: POST `data` to /api/contact and send with
-         resend.emails.send() there.
-       For now we log the message and show the success state.
-    ───────────────────────────────────────────────────────────────── */
-    console.log("Contact form submission:", data);
-    setSent(true);
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+
+    // ── client-side validation (server re-validates too) ──
+    if ((data.name ?? "").trim().length < 2) return setError("Please enter your name.");
+    if (!isEmail((data.email ?? "").trim())) return setError("Please enter a valid email address.");
+    if ((data.message ?? "").trim().length < 10) return setError("Please add a little more detail to your message.");
+
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, elapsed: Date.now() - renderedAt.current }),
+      });
+      const json = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setStatus("error");
+        setError(json.error || "Something went wrong. Please try again.");
+        return;
+      }
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+      setError("Couldn't reach the server. Check your connection and try again.");
+    }
   };
 
-  if (sent) {
+  if (status === "sent") {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
@@ -56,20 +84,28 @@ export default function ContactForm() {
     );
   }
 
+  const sending = status === "sending";
+
   return (
-    <form onSubmit={onSubmit} className="space-y-8" aria-label="Contact form">
+    <form onSubmit={onSubmit} className="space-y-8" aria-label="Contact form" noValidate>
+      {/* honeypot — hidden from humans, catches bots. Do not remove. */}
+      <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden" tabIndex={-1}>
+        <label htmlFor="company">Company</label>
+        <input id="company" name="company" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
+
       <div className="grid gap-8 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="mb-2 block font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
             Your name
           </label>
-          <input id="name" name="name" type="text" required placeholder="Jane Doe" className={inputClasses} />
+          <input id="name" name="name" type="text" required placeholder="Jane Doe" className={inputClasses} disabled={sending} />
         </div>
         <div>
           <label htmlFor="email" className="mb-2 block font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
             Email
           </label>
-          <input id="email" name="email" type="email" required placeholder="jane@studio.com" className={inputClasses} />
+          <input id="email" name="email" type="email" required placeholder="jane@studio.com" className={inputClasses} disabled={sending} />
         </div>
       </div>
 
@@ -78,7 +114,7 @@ export default function ContactForm() {
           <label htmlFor="projectType" className="mb-2 block font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
             Project type
           </label>
-          <select id="projectType" name="projectType" required className={inputClasses}>
+          <select id="projectType" name="projectType" required className={inputClasses} disabled={sending}>
             {contact.projectTypes.map((type) => (
               <option key={type} value={type} className="bg-surface text-ink">
                 {type}
@@ -90,7 +126,7 @@ export default function ContactForm() {
           <label htmlFor="budget" className="mb-2 block font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
             Budget
           </label>
-          <select id="budget" name="budget" required className={inputClasses}>
+          <select id="budget" name="budget" required className={inputClasses} disabled={sending}>
             {contact.budgets.map((budget) => (
               <option key={budget} value={budget} className="bg-surface text-ink">
                 {budget}
@@ -111,11 +147,26 @@ export default function ContactForm() {
           rows={5}
           placeholder="Tell me what you're making, when you need it, and anything else that matters."
           className={`${inputClasses} resize-none`}
+          disabled={sending}
         />
       </div>
 
-      <Button type="submit" variant="solid">
-        Send message
+      {error && (
+        <p role="alert" className="flex items-center gap-2 text-sm text-accent">
+          <AlertCircle size={15} className="shrink-0" />
+          {error}
+        </p>
+      )}
+
+      <Button type="submit" variant="solid" className={sending ? "pointer-events-none opacity-70" : ""}>
+        {sending ? (
+          <>
+            <Loader2 size={15} className="animate-spin" />
+            Sending…
+          </>
+        ) : (
+          "Send message"
+        )}
       </Button>
     </form>
   );

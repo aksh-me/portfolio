@@ -21,7 +21,10 @@ export const site = {
   role: "Photographer, videographer & web designer",
   email: "akanaiyalalp@mun.ca",
   instagram: "https://instagram.com/aksh.ae_",
-  url: "https://example.com", // REPLACE: point to your domain once you transfer the site (used for SEO/OG)
+  // Canonical site URL for SEO/OG/sitemap. Set NEXT_PUBLIC_SITE_URL in Vercel
+  // to your real production domain; the fallback is a best-guess Vercel URL.
+  // (globalThis avoids clashing with the `process` steps array exported below)
+  url: globalThis.process?.env?.NEXT_PUBLIC_SITE_URL || "https://portfolio-aksh-me.vercel.app",
   studioLine: "Photography, film & websites by Aksh Patel",
 };
 

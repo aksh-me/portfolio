@@ -24,22 +24,47 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — Web Designer & Photographer in ${site.city}`,
+    default: `${site.name} — Photographer & Videographer in ${site.city}`,
     template: `%s — ${site.name}`,
   },
   description:
-    "I build websites and chase light. Web design and photography for brands and people with a story to tell.",
+    "Photographer, videographer and web designer in St. John's, NL. Portraits, events, and websites with a storyteller's eye.",
+  keywords: [
+    "Aksh Patel",
+    "photographer St. John's",
+    "videographer Newfoundland",
+    "portrait photography",
+    "event photography",
+    "web designer St. John's",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
   openGraph: {
-    title: `${site.name} — Web Designer & Photographer`,
-    description: "Websites and photographs with a storyteller's eye.",
+    title: `${site.name} — Photographer, Videographer & Web Designer`,
+    description: "Photography, film and websites made in St. John's, NL.",
     url: site.url,
     siteName: site.name,
+    locale: "en_CA",
     type: "website",
-    images: [{ url: "https://picsum.photos/id/1015/1200/630", width: 1200, height: 630, alt: `${site.name} portfolio` }],
+    images: [{ url: "/photos/cars/Image-1.jpg", width: 1200, height: 630, alt: `${site.name} — portfolio` }],
   },
   twitter: {
     card: "summary_large_image",
+    title: `${site.name} — Photographer, Videographer & Web Designer`,
+    description: "Photography, film and websites made in St. John's, NL.",
+    images: ["/photos/cars/Image-1.jpg"],
   },
+  // Add your token from Google Search Console (HTML-tag method) as
+  // GOOGLE_SITE_VERIFICATION in Vercel, or paste it directly here.
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {
