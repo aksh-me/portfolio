@@ -106,7 +106,7 @@ export function ownerEmail(d: EnquiryData) {
     <tr><td style="padding:24px 32px 0;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         ${detailRow("Name", escapeHtml(d.name))}
-        ${detailRow("Email", `<a href="mailto:${encodeURIComponent(d.email)}" style="color:${ACCENT_DARK};text-decoration:none;">${escapeHtml(d.email)}</a>`)}
+        ${detailRow("Email", `<a href="mailto:${escapeHtml(d.email)}" style="color:${ACCENT_DARK};text-decoration:none;">${escapeHtml(d.email)}</a>`)}
         ${detailRow("Project", escapeHtml(d.projectType) || "—")}
         ${detailRow("Budget", escapeHtml(d.budget) || "—")}
       </table>
@@ -116,7 +116,7 @@ export function ownerEmail(d: EnquiryData) {
       <div style="border-left:3px solid ${ACCENT};padding:2px 0 2px 16px;font-family:${SANS};font-size:15px;line-height:1.65;color:${INK};white-space:pre-wrap;">${escapeHtml(d.message)}</div>
     </td></tr>
     <tr><td style="padding:30px 32px 40px;">
-      <a href="mailto:${encodeURIComponent(d.email)}?subject=${encodeURIComponent(`Re: your enquiry — ${site.name}`)}"
+      <a href="mailto:${escapeHtml(d.email)}?subject=${encodeURIComponent(`Re: your enquiry — ${site.name}`)}"
          style="display:inline-block;background:${ACCENT};color:#ffffff;font-family:${SANS};font-size:14px;font-weight:600;text-decoration:none;padding:13px 26px;border-radius:999px;">
         Reply to ${escapeHtml(first)} &rarr;
       </a>
