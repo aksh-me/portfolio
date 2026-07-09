@@ -7,7 +7,7 @@ import { contact } from "@/data/content";
 import Button from "@/components/Button";
 
 const inputClasses =
-  "w-full border-b border-line bg-transparent px-0 py-3 text-sm outline-none transition-colors placeholder:text-muted focus:border-accent";
+  "field w-full border-b border-line bg-transparent px-0 py-3 text-sm text-ink placeholder:text-muted";
 
 type Status = "idle" | "sending" | "sent" | "error";
 

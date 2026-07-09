@@ -62,6 +62,33 @@ body {
   border-radius: 2px;
 }
 
+/* Form fields: no box outline — instead a crimson underline that sweeps in
+   from left to right on focus (the animated fill grows over the hairline). */
+.field {
+  outline: none;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 0% 2px;
+  transition: background-size 0.45s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+.field:focus,
+.field:focus-visible {
+  outline: none;
+  background-size: 100% 2px;
+}
+/* text fields stay filled once they have content (retract when emptied);
+   selects only fill on focus, since they always hold a value */
+input.field:not(:placeholder-shown),
+textarea.field:not(:placeholder-shown) {
+  background-size: 100% 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .field {
+    transition: none;
+  }
+}
+
 /* Thin, quiet scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
