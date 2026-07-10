@@ -385,11 +385,84 @@ export const contact = {
   budgets: ["Under $250", "$250 – $500", "$500 – $1,000", "$1,000+", "Not sure yet"],
 };
 
+/* ── Trails / hikes ────────────────────────────────────────────────────────── */
+
+export type Trail = {
+  name: string;
+  location: string;
+  distance: string;
+  elevation: string;
+  difficulty: string;
+  duration: string;
+  date: string;
+  note: string;
+  // REPLACE: drop your trail photo at /public/photos/trails/trail-N.jpg and
+  // point this at "/photos/trails/trail-N.jpg". For now it reuses a nature shot.
+  image: string;
+};
+
+export const trails = {
+  intro:
+    "Most of my landscape work starts with a walk. The good light rarely shows up where the car park is — so I hike out to meet it. Here's where the trail has taken me so far.",
+  stats: [
+    { value: "04", label: "Trails logged" },
+    { value: "41 km", label: "Distance covered" },
+    { value: "1,750 m", label: "Elevation gained" },
+  ],
+  list: [
+    {
+      name: "North Head Trail",
+      location: "Signal Hill · St. John's, NL",
+      distance: "3.4 km",
+      elevation: "160 m gain",
+      difficulty: "Moderate",
+      duration: "1.5 hrs",
+      date: "Sep 2025",
+      note: "Right on my doorstep. Cliffs, the harbour narrows, and the North Atlantic throwing itself at the rocks. My warm-up hike and still my favourite at golden hour.",
+      image: "/photos/nature/Image-14.jpg",
+    },
+    {
+      name: "Skerwink Trail",
+      location: "Port Rexton · Trinity Bay, NL",
+      distance: "5.3 km",
+      elevation: "180 m gain",
+      difficulty: "Moderate",
+      duration: "2 hrs",
+      date: "Aug 2025",
+      note: "Sea stacks, spruce and the odd whale offshore if you're lucky. Every corner opens onto a new frame — I filled a card and a half here.",
+      image: "/photos/nature/Image-3.jpg",
+    },
+    {
+      name: "Gros Morne Mountain",
+      location: "Gros Morne National Park, NL",
+      distance: "16 km",
+      elevation: "806 m gain",
+      difficulty: "Hard",
+      duration: "6–8 hrs",
+      date: "Jul 2025",
+      note: "The big one. A long grind up the gully, then a plateau that feels like the top of the world. Thin air for Newfoundland, and the best summit light I've shot.",
+      image: "/photos/nature/Image-8.jpg",
+    },
+    {
+      name: "Spout Path",
+      location: "East Coast Trail · Bay Bulls, NL",
+      distance: "16 km",
+      elevation: "620 m gain",
+      difficulty: "Hard",
+      duration: "6 hrs",
+      date: "Jun 2025",
+      note: "A wave-driven geyser at the halfway mark and headlands the whole way. Long, remote and worth every step — I'll be going back with the wide lens.",
+      image: "/photos/nature/Image-7.jpg",
+    },
+  ] as Trail[],
+};
+
 /* ── Navigation & footer ───────────────────────────────────────────────────── */
 
 export const nav = [
   { label: "Work", href: "/work" },
   { label: "Photography", href: "/photography" },
+  { label: "Trails", href: "/trails" },
   { label: "Services", href: "/services" },
   { label: "Journal", href: "/journal" },
   { label: "About", href: "/about" },
@@ -400,6 +473,7 @@ export const footerNav = {
   explore: [
     { label: "Work", href: "/work" },
     { label: "Photography", href: "/photography" },
+    { label: "Trails", href: "/trails" },
     { label: "Journal", href: "/journal" },
   ],
   connect: [
