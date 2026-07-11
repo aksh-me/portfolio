@@ -3,8 +3,10 @@ import SectionHeading from "@/components/SectionHeading";
 import GalleryClient from "@/components/photography/GalleryClient";
 
 export const metadata: Metadata = {
-  title: "Photography",
-  description: "Portraits, landscapes, street and events — honest light, no stiff poses.",
+  title: "Photography in St. John's, NL",
+  description:
+    "Portrait, street, nature and event photography in St. John's, Newfoundland. Real moments, honest light — browse the gallery and book a shoot.",
+  alternates: { canonical: "/photography" },
 };
 
 export default function PhotographyPage() {

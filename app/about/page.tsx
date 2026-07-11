@@ -7,8 +7,10 @@ import Reveal from "@/components/Reveal";
 import Button from "@/components/Button";
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "The person behind the pixels and the lens.",
+  title: "About — Photographer & Videographer in St. John's, NL",
+  description:
+    "Meet Aksh Patel — a photographer, videographer and web designer based in St. John's, Newfoundland, capturing the moments most people walk past.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

@@ -8,6 +8,7 @@ import Preloader from "@/components/Preloader";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { site } from "@/data/content";
+import JsonLd from "@/components/JsonLd";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -85,6 +86,7 @@ export default function RootLayout({
       style={{ ["--font-display" as string]: '"Clash Display", "Unbounded", sans-serif' }}
     >
       <body className="bg-bg font-body text-ink antialiased">
+        <JsonLd />
         <ThemeProvider>
           <LenisProvider>
             <a

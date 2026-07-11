@@ -6,8 +6,10 @@ import Reveal from "@/components/Reveal";
 import ContactForm from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact",
-  description: "Tell me what you're making — a site, a shoot, or both.",
+  title: "Book a Photographer in St. John's, NL — Contact",
+  description:
+    "Book a photo or video shoot in St. John's, Newfoundland, or start a web project. Tell me what you're making — I reply within two days.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

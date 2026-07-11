@@ -6,8 +6,10 @@ import Reveal from "@/components/Reveal";
 import Button from "@/components/Button";
 
 export const metadata: Metadata = {
-  title: "Services",
-  description: "Photography, videography, social media and web design in St. John's.",
+  title: "Photography, Video & Web Design Services in St. John's, NL",
+  description:
+    "Hire a photographer, videographer or web designer in St. John's, Newfoundland. Portraits, events, reels, social media content and websites.",
+  alternates: { canonical: "/services" },
 };
 
 function PackageCard({ pkg, delay }: { pkg: ServicePackage; delay: number }) {
