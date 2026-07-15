@@ -98,6 +98,23 @@ export const projects: Project[] = [
     images: ["https://picsum.photos/id/365/1600/1000", "https://picsum.photos/id/429/1600/1000"],
     featured: true,
   },
+  {
+    slug: "coffee-matters",
+    title: "Coffee Matters",
+    client: "Coffee Matters",
+    year: "2026",
+    tags: ["DESIGN", "DEV"],
+    role: "Design & build",
+    stack: "Next.js · Tailwind",
+    summary: "A warm web home for a Newfoundland café that roasts its own beans.",
+    story:
+      "Coffee Matters has been pouring Newfoundland hospitality since 2007 — coffee roasted on-site, food made from scratch, two rooms with two personalities. The site had to feel like walking in out of the weather: warm tones, honest photography, a menu you can actually read, and locations a tap away. Come in out of it.",
+    liveUrl: "https://coffee-matters.vercel.app/",
+    // REPLACE: swap for real screenshots of the site (e.g. /work/coffee-1.jpg)
+    hero: "https://picsum.photos/id/425/1600/1000",
+    images: ["https://picsum.photos/id/766/1600/1000", "https://picsum.photos/id/1060/1600/1000"],
+    featured: true,
+  },
 ];
 
 /* ── Photography ───────────────────────────────────────────────────────────── */
