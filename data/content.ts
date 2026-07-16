@@ -115,6 +115,23 @@ export const projects: Project[] = [
     images: ["https://picsum.photos/id/766/1600/1000", "https://picsum.photos/id/1060/1600/1000"],
     featured: true,
   },
+  {
+    slug: "cookies-shop-cafe",
+    title: "Cookies Shop Cafe",
+    client: "Cookies Shop",
+    year: "2026",
+    tags: ["DESIGN", "DEV"],
+    role: "Design & build",
+    stack: "Next.js · Tailwind",
+    summary: "Craft cookies, laminated pastries and single-origin espresso — baked at dawn, gone by dusk.",
+    story:
+      "A downtown St. John's bakery that bakes fourteen small trays a day and sells out by evening. The site leans into that scarcity: live opening hours, what came out of the oven, online ordering, and a loyalty club for the regulars. Clean type, lots of whitespace, and photography that does the selling.",
+    liveUrl: "https://cookies-shop-cafe.vercel.app/",
+    // REPLACE: swap for real screenshots of the site (e.g. /work/cookies-1.jpg)
+    hero: "https://picsum.photos/id/312/1600/1000",
+    images: ["https://picsum.photos/id/365/1600/1000", "https://picsum.photos/id/1080/1600/1000"],
+    featured: true,
+  },
 ];
 
 /* ── Photography ───────────────────────────────────────────────────────────── */
