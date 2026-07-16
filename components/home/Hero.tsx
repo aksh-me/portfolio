@@ -31,20 +31,57 @@ export default function Hero() {
   const ease = [0.16, 1, 0.3, 1] as const;
 
   return (
-    <section className="relative flex min-h-[100svh] flex-col overflow-hidden">
-      {/* ── layered fullscreen media ── */}
+    <section
+      className="relative flex min-h-[100svh] flex-col overflow-hidden"
+      // single source of truth for the focus-window geometry: the sharp
+      // clip-path AND the frame border both derive from these variables,
+      // so they can never drift apart
+      style={
+        {
+          "--fs": "clamp(200px, 26vw, 340px)", // frame size
+          "--ft": "24%", // frame top edge
+        } as React.CSSProperties
+      }
+    >
+      {/* ── layered fullscreen media ──
+          One shared bleed box holds the blurred copy, the sharp clipped
+          window, AND the frame border. Same containing block → the image
+          content, the clip rect and the border are always pixel-aligned,
+          and the parallax moves them together. Scrims stay static below. */}
       <motion.div className="absolute inset-0" style={{ y: mediaY }} aria-hidden>
         <div className="absolute -inset-y-[6%] inset-x-0">
-          <Image
-            src={hero.photoImage}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className={`object-cover object-[50%_30%] transition-opacity duration-[1200ms] ease-out ${
+          {/* phones: plain sharp photo (the focus-window trick is desktop-only) */}
+          <div
+            className={`absolute inset-0 transition-opacity duration-[1200ms] ease-out md:hidden ${
               altMode ? "opacity-0" : "opacity-100"
             }`}
-          />
+          >
+            <Image src={hero.photoImage} alt="" fill priority sizes="100vw" className="object-cover" />
+          </div>
+
+          {/* desktop: photo state, defocused everywhere… */}
+          <div
+            className={`absolute inset-0 hidden blur-[10px] transition-opacity duration-[1200ms] ease-out md:block ${
+              altMode ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            <Image src={hero.photoImage} alt="" fill priority sizes="100vw" className="object-cover" />
+          </div>
+
+          {/* …except inside the viewfinder window — identical copy, tack sharp */}
+          <div
+            className={`absolute inset-0 hidden transition-opacity duration-[1200ms] ease-out md:block ${
+              altMode ? "opacity-0" : "opacity-100"
+            }`}
+            style={{
+              clipPath:
+                "inset(calc(var(--ft)) calc(50% - var(--fs) / 2) calc(100% - var(--ft) - var(--fs)) calc(50% - var(--fs) / 2))",
+            }}
+          >
+            <Image src={hero.photoImage} alt="" fill priority sizes="100vw" className="object-cover" />
+          </div>
+
+          {/* web-design state (hover the name) */}
           <Image
             src={hero.webImage}
             alt=""
@@ -55,11 +92,31 @@ export default function Hero() {
               altMode ? "opacity-100" : "opacity-0"
             }`}
           />
+
+          {/* viewfinder frame — same box, same variables as the clip above */}
+          <motion.div
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: altMode ? 0 : 1 }}
+            transition={{ duration: 0.7, delay: reduce ? 0 : 0.9 }}
+            className="absolute left-1/2 hidden -translate-x-1/2 md:block"
+            style={{ top: "var(--ft)" }}
+          >
+            <div className="h-[var(--fs)] w-[var(--fs)] border border-white/60 relative">
+              <span className="absolute -left-px -top-px h-4 w-4 border-l-2 border-t-2 border-accent" />
+              <span className="absolute -right-px -top-px h-4 w-4 border-r-2 border-t-2 border-accent" />
+              <span className="absolute -bottom-px -left-px h-4 w-4 border-b-2 border-l-2 border-accent" />
+              <span className="absolute -bottom-px -right-px h-4 w-4 border-b-2 border-r-2 border-accent" />
+            </div>
+            <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-white/70">
+              {hero.frameCaption}
+            </p>
+          </motion.div>
         </div>
-        {/* legibility scrims — light at the top for the nav, heavier at the base */}
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-bg/80 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-bg via-bg/35 to-transparent" />
       </motion.div>
+
+      {/* static scrims: vignette rolling in from the top + base for the name */}
+      <div aria-hidden className="absolute inset-x-0 top-0 h-[46%] bg-gradient-to-b from-black/60 via-black/25 to-transparent" />
+      <div aria-hidden className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-bg via-bg/35 to-transparent" />
 
       {/* ── content ── */}
       <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-6 pt-28 md:px-12 md:pt-32">
@@ -104,37 +161,6 @@ export default function Hero() {
               <Mail size={17} />
             </a>
           </motion.div>
-        </div>
-
-        {/* viewfinder frame over the subject — outer div owns the centering
-            transform; the motion div animates inside it (framer would
-            otherwise overwrite the translate) */}
-        <div className="pointer-events-none absolute left-1/2 top-[27%] hidden -translate-x-1/2 md:block">
-        <motion.div
-          aria-hidden
-          initial={reduce ? false : { opacity: 0, scale: 0.92 }}
-          animate={{
-            opacity: altMode ? 0 : 1,
-            scale: 1,
-            y: reduce ? 0 : [0, -8, 0],
-          }}
-          transition={{
-            opacity: { duration: 0.7, delay: reduce ? 0 : 0.9 },
-            scale: { duration: 1, delay: 0.9, ease },
-            y: { duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 1.8 },
-          }}
-        >
-          <div className="relative h-[clamp(180px,24vw,300px)] w-[clamp(180px,24vw,300px)] border border-white/60">
-            {/* corner ticks */}
-            <span className="absolute -left-px -top-px h-4 w-4 border-l-2 border-t-2 border-accent" />
-            <span className="absolute -right-px -top-px h-4 w-4 border-r-2 border-t-2 border-accent" />
-            <span className="absolute -bottom-px -left-px h-4 w-4 border-b-2 border-l-2 border-accent" />
-            <span className="absolute -bottom-px -right-px h-4 w-4 border-b-2 border-r-2 border-accent" />
-          </div>
-          <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-white/70">
-            {hero.frameCaption}
-          </p>
-        </motion.div>
         </div>
 
         {/* bottom block: CTAs · greeting · giant cropped name */}

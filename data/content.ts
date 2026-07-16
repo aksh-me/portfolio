@@ -37,13 +37,13 @@ export const hero = {
   greeting: "Hey! I'm…",
   // the giant bottom-cropped display name
   bigName: "AKSH",
-  // mono caption under the viewfinder frame on the portrait
-  frameCaption: "50mm · GOLDEN HOUR · ZV-E10",
+  // mono caption under the viewfinder frame (real EXIF of the hero shot)
+  frameCaption: "17mm · f/8 · ISO 125 · ZV-E10",
   ctaPrimary: { label: "See the work", href: "/work" },
   ctaSecondary: { label: "Book a shoot", href: "/contact" },
   // Dual-lens: the portrait is the default (photographer) state; hovering the
   // big name crossfades to the web-design state. Auto-crossfades on touch.
-  photoImage: "/photos/aksh-portrait.jpg",
+  photoImage: "/photos/nature/Image-14.jpg",
   webImage: "/photos/cars/Image-1.jpg",
 };
 
