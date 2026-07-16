@@ -31,18 +31,20 @@ export const site = {
 /* ── Hero ──────────────────────────────────────────────────────────────────── */
 
 export const hero = {
-  eyebrow: "ST. JOHN'S, NL — PHOTO · VIDEO · WEB",
-  // The word wrapped in *asterisks* becomes the crimson "dual-lens" trigger.
-  headline: "I capture the moments most people walk past — every project starts with a *story*.",
-  sub: "A photographer and filmmaker in St. John's, turning everyday moments into things worth keeping.",
+  // top-left disciplines line and location
+  disciplines: ["Photography", "Video", "Web Design"],
+  location: "St. John's, NL",
+  greeting: "Hey! I'm…",
+  // the giant bottom-cropped display name
+  bigName: "AKSH",
+  // mono caption under the viewfinder frame on the portrait
+  frameCaption: "50mm · GOLDEN HOUR · ZV-E10",
   ctaPrimary: { label: "See the work", href: "/work" },
   ctaSecondary: { label: "Book a shoot", href: "/contact" },
-  // The two hero background images the *story* word crossfades between.
-  // The two backgrounds the *story* word crossfades between. Both are your
-  // own night long-exposures for now — moody, not stock. When you add a real
-  // web project later, you can point webImage at a screenshot of it.
+  // Dual-lens: the portrait is the default (photographer) state; hovering the
+  // big name crossfades to the web-design state. Auto-crossfades on touch.
+  photoImage: "/photos/aksh-portrait.jpg",
   webImage: "/photos/cars/Image-1.jpg",
-  photoImage: "/photos/portraits/harsh/Image-8.jpg",
 };
 
 /* ── Projects (web design) ─────────────────────────────────────────────────── */
@@ -389,7 +391,7 @@ export const posts: Post[] = [
 /* ── About ─────────────────────────────────────────────────────────────────── */
 
 export const about = {
-  portrait: "/photos/aksh.jpg", // your photo (4000x3000)
+  portrait: "/photos/aksh-portrait.jpg", // your photo, upright 3:4 (3000x4000)
   teaser:
     "I've had a picture in my head of the kind of work I wanted to make for as long as I can remember — photography and video that hold on to the moments most people walk right past. This is me chasing that, one frame at a time.",
   story: [
