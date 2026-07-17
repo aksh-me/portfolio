@@ -9,6 +9,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { site } from "@/data/content";
 import JsonLd from "@/components/JsonLd";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -102,6 +103,7 @@ export default function RootLayout({
             <Footer />
           </LenisProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
