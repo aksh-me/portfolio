@@ -167,26 +167,6 @@ export default function Hero() {
       <div aria-hidden className="absolute inset-x-0 top-0 h-[46%] bg-gradient-to-b from-black/60 via-black/25 to-transparent" />
       <div aria-hidden className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-bg via-bg/35 to-transparent" />
 
-      {/* carousel arrows */}
-      <div className="absolute inset-x-4 top-1/2 z-20 flex -translate-y-1/2 justify-between md:inset-x-8">
-        <button
-          type="button"
-          onClick={() => paginate(-1)}
-          aria-label="Previous photo"
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-bg/40 text-ink backdrop-blur-md transition-colors hover:border-accent hover:text-accent md:h-12 md:w-12"
-        >
-          <ChevronLeft size={18} />
-        </button>
-        <button
-          type="button"
-          onClick={() => paginate(1)}
-          aria-label="Next photo"
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-bg/40 text-ink backdrop-blur-md transition-colors hover:border-accent hover:text-accent md:h-12 md:w-12"
-        >
-          <ChevronRight size={18} />
-        </button>
-      </div>
-
       {/* ── content ── */}
       <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-6 pt-28 md:px-12 md:pt-32">
         {/* top row: disciplines (left) · socials (right) */}
@@ -232,20 +212,40 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* bottom block: CTAs · greeting */}
+        {/* bottom block: CTAs (left) · carousel arrows (right) · greeting */}
         <div className="mt-auto">
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease }}
-            className="mb-8 flex flex-wrap items-center gap-3"
+            className="mb-8 flex flex-wrap items-center justify-between gap-4"
           >
-            <Button href={hero.ctaPrimary.href} variant="ghost" className="!bg-bg/30 backdrop-blur-md">
-              {hero.ctaPrimary.label}
-            </Button>
-            <Button href={hero.ctaSecondary.href} variant="ghost" className="!bg-bg/30 backdrop-blur-md">
-              {hero.ctaSecondary.label}
-            </Button>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button href={hero.ctaPrimary.href} variant="ghost" className="!bg-bg/30 backdrop-blur-md">
+                {hero.ctaPrimary.label}
+              </Button>
+              <Button href={hero.ctaSecondary.href} variant="ghost" className="!bg-bg/30 backdrop-blur-md">
+                {hero.ctaSecondary.label}
+              </Button>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => paginate(-1)}
+                aria-label="Previous photo"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-bg/40 text-ink backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                type="button"
+                onClick={() => paginate(1)}
+                aria-label="Next photo"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-bg/40 text-ink backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
           </motion.div>
 
           <motion.p
