@@ -72,12 +72,12 @@ export default function Hero() {
     <section
       className="relative flex min-h-[100svh] flex-col overflow-hidden"
       // shared geometry for the sharp window + frame border (see globals.css)
-      style={{ "--fs": "clamp(200px, 26vw, 340px)", "--ft": "24%" } as React.CSSProperties}
+      style={{ "--fs": "clamp(150px, 26vw, 340px)", "--ft": "24%" } as React.CSSProperties}
     >
       {/* ── two-plane carousel media ── */}
       <motion.div className="absolute inset-0" style={{ y: mediaY }} aria-hidden>
         <div className="absolute -inset-y-[6%] inset-x-0 overflow-hidden">
-          {/* backdrop plane — sharp on phones, defocused on desktop */}
+          {/* backdrop plane — defocused everywhere; the window stays sharp */}
           <AnimatePresence initial={false} custom={dir}>
             <motion.div
               key={`out-${index}`}
@@ -87,7 +87,7 @@ export default function Hero() {
               animate="center"
               exit="exit"
               transition={planeTransition}
-              className="absolute inset-0 md:blur-[10px]"
+              className="absolute inset-0 blur-[10px]"
             >
               <Image
                 src={slide.src}
@@ -97,12 +97,15 @@ export default function Hero() {
                 sizes="100vw"
                 className="object-cover"
               />
+              {/* slight dim outside the window so the sharp box reads
+                  brighter on any image, even blown-out skies */}
+              <div className="absolute inset-0 bg-black/25" />
             </motion.div>
           </AnimatePresence>
 
           {/* window plane — static clip, moving content, opposite direction */}
           <div
-            className="absolute inset-0 hidden md:block"
+            className="absolute inset-0"
             style={{
               clipPath:
                 "inset(calc(var(--ft)) calc(50% - var(--fs) / 2) calc(100% - var(--ft) - var(--fs)) calc(50% - var(--fs) / 2))",
@@ -132,12 +135,17 @@ export default function Hero() {
           </div>
 
           {/* viewfinder frame + per-slide EXIF caption */}
-          <div className="absolute left-1/2 hidden -translate-x-1/2 md:block" style={{ top: "var(--ft)" }}>
-            <div className="relative h-[var(--fs)] w-[var(--fs)] border border-white/60">
-              <span className="absolute -left-px -top-px h-4 w-4 border-l-2 border-t-2 border-accent" />
-              <span className="absolute -right-px -top-px h-4 w-4 border-r-2 border-t-2 border-accent" />
-              <span className="absolute -bottom-px -left-px h-4 w-4 border-b-2 border-l-2 border-accent" />
-              <span className="absolute -bottom-px -right-px h-4 w-4 border-b-2 border-r-2 border-accent" />
+          <div className="absolute left-1/2 -translate-x-1/2" style={{ top: "var(--ft)" }}>
+            <div
+              className="relative h-[var(--fs)] w-[var(--fs)] border-2 border-white/90"
+              // dark halo on both sides of the white border so the square
+              // stays visible over bright skies AND dark shadows
+              style={{ boxShadow: "0 0 0 1px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(0,0,0,0.45)" }}
+            >
+              <span className="absolute -left-0.5 -top-0.5 h-5 w-5 border-l-[3px] border-t-[3px] border-accent" />
+              <span className="absolute -right-0.5 -top-0.5 h-5 w-5 border-r-[3px] border-t-[3px] border-accent" />
+              <span className="absolute -bottom-0.5 -left-0.5 h-5 w-5 border-b-[3px] border-l-[3px] border-accent" />
+              <span className="absolute -bottom-0.5 -right-0.5 h-5 w-5 border-b-[3px] border-r-[3px] border-accent" />
             </div>
             <AnimatePresence mode="wait">
               <motion.p
@@ -146,7 +154,7 @@ export default function Hero() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.35 }}
-                className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-white/70"
+                className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-white/85 [text-shadow:0_1px_4px_rgba(0,0,0,0.7)]"
               >
                 {slide.caption}
               </motion.p>
@@ -251,34 +259,23 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* the giant name — cropped by the bottom edge; hover = chromatic glitch */}
+      {/* the giant name — cropped by the bottom edge */}
       <div className="relative z-10 overflow-hidden">
-        <motion.div
+        <motion.h1
+          aria-label={site.name}
           initial={reduce ? false : { y: "55%", opacity: 0 }}
           animate={{ y: "14%", opacity: 1 }}
           transition={{ duration: 1.1, delay: 0.85, ease }}
-          className="hero-name relative w-full select-none text-center font-display font-semibold leading-[0.8] tracking-[-0.04em] text-[clamp(6rem,25.5vw,25rem)]"
+          className="w-full select-none text-center font-display font-semibold leading-[0.8] tracking-[-0.04em] text-[clamp(6rem,25.5vw,25rem)] text-transparent"
+          style={{
+            backgroundImage:
+              "linear-gradient(to bottom, color-mix(in srgb, var(--text) 55%, transparent), color-mix(in srgb, var(--text) 95%, transparent) 55%, var(--text))",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+          }}
         >
-          {/* chromatic ghosts (activated on hover, see globals.css) */}
-          <span aria-hidden className="glitch glitch-a absolute inset-0 text-accent">
-            {hero.bigName}
-          </span>
-          <span aria-hidden className="glitch glitch-b absolute inset-0 text-[#2DE2E6]">
-            {hero.bigName}
-          </span>
-          <h1
-            aria-label={site.name}
-            className="relative text-transparent"
-            style={{
-              backgroundImage:
-                "linear-gradient(to bottom, color-mix(in srgb, var(--text) 55%, transparent), color-mix(in srgb, var(--text) 95%, transparent) 55%, var(--text))",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-            }}
-          >
-            {hero.bigName}
-          </h1>
-        </motion.div>
+          {hero.bigName}
+        </motion.h1>
       </div>
     </section>
   );
