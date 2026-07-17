@@ -134,6 +134,54 @@ html.lenis body {
   border-bottom: 1px solid var(--line);
 }
 
+/* ── Chromatic-glitch hover for the hero name ──
+   Two colored ghost copies jitter behind the gradient text while hovered,
+   and the whole word micro-skews — RGB-split / "trippy" without breaking
+   the type. Disabled for reduced-motion users. */
+.glitch {
+  opacity: 0;
+  pointer-events: none;
+}
+.hero-name:hover .glitch-a {
+  opacity: 0.6;
+  animation: glitch-a 0.38s steps(2, end) infinite;
+}
+.hero-name:hover .glitch-b {
+  opacity: 0.5;
+  animation: glitch-b 0.32s steps(2, end) infinite reverse;
+}
+.hero-name:hover h1 {
+  animation: glitch-skew 0.5s steps(2, end) infinite;
+}
+@keyframes glitch-a {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-0.045em, 0.02em) skewX(-2deg); }
+  50% { transform: translate(0.035em, -0.015em); }
+  75% { transform: translate(-0.02em, -0.03em) skewX(1.5deg); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes glitch-b {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(0.04em, -0.02em) skewX(1.5deg); }
+  50% { transform: translate(-0.03em, 0.02em); }
+  75% { transform: translate(0.02em, 0.035em) skewX(-1deg); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes glitch-skew {
+  0% { transform: skewX(0); }
+  30% { transform: skewX(0.6deg); }
+  60% { transform: skewX(-0.5deg); }
+  100% { transform: skewX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-name:hover .glitch-a,
+  .hero-name:hover .glitch-b,
+  .hero-name:hover h1 {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

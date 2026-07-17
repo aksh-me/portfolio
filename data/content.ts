@@ -37,14 +37,16 @@ export const hero = {
   greeting: "Hey! I'm…",
   // the giant bottom-cropped display name
   bigName: "AKSH",
-  // mono caption under the viewfinder frame (real EXIF of the hero shot)
-  frameCaption: "17mm · f/8 · ISO 125 · ZV-E10",
   ctaPrimary: { label: "See the work", href: "/work" },
   ctaSecondary: { label: "Book a shoot", href: "/contact" },
-  // Dual-lens: the portrait is the default (photographer) state; hovering the
-  // big name crossfades to the web-design state. Auto-crossfades on touch.
-  photoImage: "/photos/nature/Image-14.jpg",
-  webImage: "/photos/cars/Image-1.jpg",
+  // Hero carousel: arrows + auto-advance. Captions are each shot's real EXIF,
+  // shown under the viewfinder frame. Add/remove slides freely.
+  slides: [
+    { src: "/photos/nature/Image-14.jpg", caption: "17mm · f/8 · ISO 125" },
+    { src: "/photos/cars/Image-1.jpg", caption: "23mm · f/25 · 1/3s" },
+    { src: "/photos/nature/Image-8.jpg", caption: "50mm · f/8 · ISO 160" },
+    { src: "/photos/streets/Image-8.jpg", caption: "50mm · f/5.6 · ISO 100" },
+  ],
 };
 
 /* ── Projects (web design) ─────────────────────────────────────────────────── */
