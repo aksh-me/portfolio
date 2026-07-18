@@ -9,10 +9,18 @@ import { photos } from "@/data/content";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 
-/** Horizontally draggable film strip of 8 photos, with a scroll-linked drift. */
+/**
+ * Horizontally draggable film strip of 8 photos with a scroll-linked drift
+ * and a curved-screen (sphere-like) projection: cards at the screen edges
+ * tilt toward the viewer and stretch, the center pinches slightly away —
+ * like standing inside a curved wall of prints. The per-card transform is
+ * recomputed every frame from the card's distance to the viewport center,
+ * so the curve holds while dragging and scrolling.
+ */
 export default function PhotoStrip() {
   const sectionRef = useRef<HTMLElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
   const [dragWidth, setDragWidth] = useState(0);
   const reduce = useReducedMotion();
 
@@ -32,6 +40,28 @@ export default function PhotoStrip() {
     return () => window.removeEventListener("resize", measure);
   }, []);
 
+  // the curved-screen projection loop
+  useEffect(() => {
+    if (reduce) return;
+    let rafId: number;
+    const tick = () => {
+      rafId = requestAnimationFrame(tick);
+      const mid = window.innerWidth / 2;
+      for (const card of cardRefs.current) {
+        if (!card) continue;
+        const r = card.getBoundingClientRect();
+        if (r.right < -200 || r.left > window.innerWidth + 200) continue; // offscreen
+        // n: -1 at left edge of screen, 0 center, +1 at right edge
+        const n = Math.max(-1.2, Math.min(1.2, (r.left + r.width / 2 - mid) / mid));
+        const rotate = -n * 26; // outer edge swings toward the viewer
+        const scale = 0.94 + Math.abs(n) * 0.16; // edges stretch, center pinches
+        card.style.transform = `perspective(1200px) rotateY(${rotate}deg) scale(${scale})`;
+      }
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [reduce]);
+
   // featured shots span all categories, so the strip stays varied
   const strip = photos.filter((p) => p.featured).slice(0, 8);
 
@@ -44,17 +74,23 @@ export default function PhotoStrip() {
       <div className="mt-14">
         {/* Clip first, then drift INSIDE the clip so the parallax can never
             expose the page background on the right edge. */}
-        <div ref={stripRef} className="overflow-hidden px-6 md:px-12">
+        <div ref={stripRef} className="overflow-hidden px-6 py-8 md:px-12">
           <motion.div style={{ x: driftX }} className="w-max">
             <motion.div
-              className="flex w-max cursor-grab gap-5 active:cursor-grabbing"
+              className="flex w-max cursor-grab items-center gap-5 active:cursor-grabbing"
               drag="x"
               dragConstraints={{ left: -dragWidth, right: 0 }}
               dragElastic={0.08}
               dragTransition={{ power: 0.25, timeConstant: 220 }}
             >
-              {strip.map((photo) => (
-              <figure key={photo.id} className="w-[240px] shrink-0 select-none md:w-[320px]">
+              {strip.map((photo, i) => (
+              <figure
+                key={photo.id}
+                ref={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+                className="w-[240px] shrink-0 select-none will-change-transform md:w-[320px]"
+              >
                 <div className="pointer-events-none relative aspect-[3/4] overflow-hidden">
                   <Image
                     src={photo.src}
