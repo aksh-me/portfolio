@@ -136,6 +136,23 @@ export const projects: Project[] = [
     images: ["https://picsum.photos/id/365/1600/1000", "https://picsum.photos/id/1080/1600/1000"],
     featured: true,
   },
+  {
+    slug: "bagel-cafe",
+    title: "The Bagel Cafe",
+    client: "The Bagel Cafe",
+    year: "2026",
+    tags: ["DESIGN", "DEV"],
+    role: "Design & build",
+    stack: "Next.js · Tailwind",
+    summary: "All-day breakfast on the oldest street in North America.",
+    story:
+      "A Duckworth Street institution: bagels boiled and baked on-site every morning, Bagel Benedicts, and Newfoundland classics like toutons and fish cakes. The site keeps that warmth — cream tones, morning-light photography, a menu built for hungry scrolling, and online ordering, catering and gift cards a tap away.",
+    liveUrl: "https://bagel-cafe.vercel.app/",
+    // REPLACE: swap for real screenshots of the site (e.g. /work/bagel-1.jpg)
+    hero: "https://picsum.photos/id/835/1600/1000",
+    images: ["https://picsum.photos/id/425/1600/1000", "https://picsum.photos/id/292/1600/1000"],
+    featured: false,
+  },
 ];
 
 /* ── Photography ───────────────────────────────────────────────────────────── */
