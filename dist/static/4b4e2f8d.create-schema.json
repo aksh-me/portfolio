@@ -1,0 +1,181 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "city",
+        "type": "string"
+      },
+      {
+        "name": "role",
+        "type": "string",
+        "title": "Role / tagline"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "email",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "name": "instagram",
+        "type": "url",
+        "title": "Instagram URL"
+      },
+      {
+        "description": "e.g. “Photography, film & websites by Aksh Patel”",
+        "name": "studioLine",
+        "type": "string",
+        "title": "Studio line (small print)"
+      }
+    ],
+    "name": "siteSettings",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "name": "eyebrow",
+        "type": "string",
+        "title": "Eyebrow (small caps line)"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "description": "Wrap a word in *asterisks* to make it the crimson italic accent, e.g. “…people *walk* *past*.”",
+        "name": "headline",
+        "type": "string"
+      },
+      {
+        "rows": 3,
+        "name": "sub",
+        "type": "text",
+        "title": "Sub-paragraph"
+      },
+      {
+        "fields": [
+          {
+            "name": "label",
+            "type": "string"
+          },
+          {
+            "name": "href",
+            "type": "string",
+            "title": "Link"
+          }
+        ],
+        "name": "ctaPrimary",
+        "type": "object",
+        "title": "Primary button"
+      },
+      {
+        "fields": [
+          {
+            "name": "label",
+            "type": "string"
+          },
+          {
+            "name": "href",
+            "type": "string",
+            "title": "Link"
+          }
+        ],
+        "name": "ctaSecondary",
+        "type": "object",
+        "title": "Secondary button"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "options": {
+                  "hotspot": true
+                },
+                "validation": [
+                  {
+                    "level": "error",
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ]
+                  }
+                ],
+                "name": "image",
+                "type": "image",
+                "title": "Photo"
+              },
+              {
+                "description": "e.g. “17mm · f/8 · ISO 125”",
+                "name": "caption",
+                "type": "string",
+                "title": "Caption (EXIF)"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "slides",
+        "type": "array",
+        "title": "Carousel slides"
+      }
+    ],
+    "name": "hero",
+    "type": "document"
+  }
+]
