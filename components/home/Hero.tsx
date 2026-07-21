@@ -2,124 +2,74 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Instagram, Mail } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { hero, site } from "@/data/content";
 import Button from "@/components/Button";
+import SectionHeading from "@/components/SectionHeading";
+import Reveal from "@/components/Reveal";
 
 /**
- * Editorial hero with a two-plane carousel.
+ * Hero, rebuilt to speak the site's own language: type-led on the left
+ * (the same masked-reveal heading + crimson accent used across every
+ * section), and the photo carousel disciplined inside a hairline-framed
+ * "viewfinder" card on the right — contained imagery, not full-bleed.
  *
- * The signature transition: the backdrop (defocused) and the viewfinder
- * window (sharp) are two aligned copies of the same slide, and they wipe in
- * OPPOSITE directions. Left arrow → the backdrop slides right-to-left while
- * the window content slides left-to-right; the right arrow mirrors it. Both
- * planes land on the same frame, so the focus illusion snaps back together.
- *
- * Arrows navigate, and the carousel auto-advances every 6s (paused for
- * reduced-motion users, who get plain crossfades instead of wipes).
- *
- * Hovering the giant name triggers a chromatic-glitch (see globals.css).
+ * The card keeps the signature camera feel (corner ticks, focus reticle,
+ * a REC dot, live EXIF and a slide counter) and auto-advances every 6s
+ * with arrows to navigate. Reduced-motion users get a plain crossfade
+ * and no autoplay.
  */
 
-const WIPE = { duration: 0.9, ease: [0.76, 0, 0.24, 1] as const };
-
-// backdrop plane: new slide enters against the click direction…
-const outsidePlane = {
-  enter: (d: number) => ({ x: `${-d * 100}%` }),
-  center: { x: "0%" },
-  exit: (d: number) => ({ x: `${d * 100}%` }),
-};
-// …while the window plane travels the opposite way
-const insidePlane = {
-  enter: (d: number) => ({ x: `${d * 100}%` }),
-  center: { x: "0%" },
-  exit: (d: number) => ({ x: `${-d * 100}%` }),
-};
-const fadePlane = {
-  enter: { opacity: 0 },
-  center: { opacity: 1 },
-  exit: { opacity: 0 },
-};
+const pad = (n: number) => String(n + 1).padStart(2, "0");
 
 export default function Hero() {
-  const [[index, dir], setSlide] = useState<[number, number]>([0, 1]);
+  const [index, setIndex] = useState(0);
   const reduce = useReducedMotion();
-  const { scrollY } = useScroll();
-  const mediaY = useTransform(scrollY, [0, 900], [0, reduce ? 0 : 90]);
-
   const count = hero.slides.length;
   const slide = hero.slides[index];
 
-  const paginate = useCallback(
-    (d: number) => setSlide(([i]) => [(i + d + count) % count, d]),
-    [count]
-  );
+  const go = useCallback((d: number) => setIndex((i) => (i + d + count) % count), [count]);
 
-  // auto-advance every 6s; every navigation (manual or auto) resets the clock
+  // auto-advance; every navigation resets the timer
   useEffect(() => {
     if (reduce) return;
-    const id = setTimeout(() => paginate(1), 6000);
+    const id = setTimeout(() => go(1), 6000);
     return () => clearTimeout(id);
-  }, [index, reduce, paginate]);
+  }, [index, reduce, go]);
 
   const ease = [0.16, 1, 0.3, 1] as const;
-  const planeTransition = reduce ? { duration: 0.5 } : WIPE;
-  const outside = reduce ? fadePlane : outsidePlane;
-  const inside = reduce ? fadePlane : insidePlane;
 
   return (
-    <section
-      className="relative flex min-h-[100svh] flex-col overflow-hidden"
-      // shared geometry for the sharp window + frame border (see globals.css)
-      style={{ "--fs": "clamp(150px, 26vw, 340px)", "--ft": "24%" } as React.CSSProperties}
-    >
-      {/* ── two-plane carousel media ── */}
-      <motion.div className="absolute inset-0" style={{ y: mediaY }} aria-hidden>
-        <div className="absolute -inset-y-[6%] inset-x-0 overflow-hidden">
-          {/* backdrop plane — defocused everywhere; the window stays sharp */}
-          <AnimatePresence initial={false} custom={dir}>
-            <motion.div
-              key={`out-${index}`}
-              custom={dir}
-              variants={outside}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={planeTransition}
-              className="absolute inset-0 blur-[10px]"
-            >
-              <Image
-                src={slide.src}
-                alt=""
-                fill
-                priority={index === 0}
-                sizes="100vw"
-                className="object-cover"
-              />
-              {/* slight dim outside the window so the sharp box reads
-                  brighter on any image, even blown-out skies */}
-              <div className="absolute inset-0 bg-black/25" />
-            </motion.div>
-          </AnimatePresence>
+    <section className="mx-auto flex min-h-[100svh] max-w-[1600px] flex-col justify-start px-6 pb-16 pt-32 md:px-12 md:pt-40 lg:justify-center">
+      <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        {/* ── left: type ── */}
+        <div>
+          <SectionHeading as="h1" size="display-2" eyebrow={hero.eyebrow} title={hero.headline} />
+          <Reveal delay={0.15} className="mt-8 max-w-md">
+            <p className="text-base leading-relaxed text-muted md:text-lg">{hero.sub}</p>
+          </Reveal>
+          <Reveal delay={0.25} className="mt-10 flex flex-wrap items-center gap-3">
+            <Button href={hero.ctaPrimary.href} variant="solid">
+              {hero.ctaPrimary.label}
+            </Button>
+            <Button href={hero.ctaSecondary.href} variant="ghost">
+              {hero.ctaSecondary.label}
+            </Button>
+          </Reveal>
+        </div>
 
-          {/* window plane — static clip, moving content, opposite direction */}
-          <div
-            className="absolute inset-0"
-            style={{
-              clipPath:
-                "inset(calc(var(--ft)) calc(50% - var(--fs) / 2) calc(100% - var(--ft) - var(--fs)) calc(50% - var(--fs) / 2))",
-            }}
-          >
-            <AnimatePresence initial={false} custom={dir}>
+        {/* ── right: framed viewfinder carousel ── */}
+        <Reveal delay={0.2}>
+          <div className="relative aspect-[4/5] overflow-hidden rounded-sm border border-line bg-surface sm:aspect-[4/3] lg:aspect-[16/13]">
+            {/* crossfading slide */}
+            <AnimatePresence>
               <motion.div
-                key={`in-${index}`}
-                custom={dir}
-                variants={inside}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={planeTransition}
+                key={index}
+                initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 1.06 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduce ? 0.4 : 1.1, ease }}
                 className="absolute inset-0"
               >
                 <Image
@@ -127,155 +77,78 @@ export default function Hero() {
                   alt=""
                   fill
                   priority={index === 0}
-                  sizes="100vw"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
                 />
               </motion.div>
             </AnimatePresence>
-          </div>
 
-          {/* viewfinder frame + per-slide EXIF caption */}
-          <div className="absolute left-1/2 -translate-x-1/2" style={{ top: "var(--ft)" }}>
+            {/* scrims so the mono UI stays legible over any frame */}
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/45 to-transparent" />
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/55 to-transparent" />
+
+            {/* viewfinder frame (square, centred) */}
             <div
-              className="relative h-[var(--fs)] w-[var(--fs)] border-2 border-white/90"
-              // dark halo on both sides of the white border so the square
-              // stays visible over bright skies AND dark shadows
-              style={{ boxShadow: "0 0 0 1px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(0,0,0,0.45)" }}
+              aria-hidden
+              className="pointer-events-none absolute left-1/2 top-1/2 aspect-square w-[42%] max-w-[280px] -translate-x-1/2 -translate-y-1/2"
             >
-              <span className="absolute -left-0.5 -top-0.5 h-5 w-5 border-l-[3px] border-t-[3px] border-accent" />
-              <span className="absolute -right-0.5 -top-0.5 h-5 w-5 border-r-[3px] border-t-[3px] border-accent" />
-              <span className="absolute -bottom-0.5 -left-0.5 h-5 w-5 border-b-[3px] border-l-[3px] border-accent" />
-              <span className="absolute -bottom-0.5 -right-0.5 h-5 w-5 border-b-[3px] border-r-[3px] border-accent" />
+              <span className="absolute -left-px -top-px h-6 w-6 border-l-2 border-t-2 border-accent" />
+              <span className="absolute -right-px -top-px h-6 w-6 border-r-2 border-t-2 border-accent" />
+              <span className="absolute -bottom-px -left-px h-6 w-6 border-b-2 border-l-2 border-accent" />
+              <span className="absolute -bottom-px -right-px h-6 w-6 border-b-2 border-r-2 border-accent" />
+              <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent" />
             </div>
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={index}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.35 }}
-                className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-white/85 [text-shadow:0_1px_4px_rgba(0,0,0,0.7)]"
-              >
-                {slide.caption}
-              </motion.p>
-            </AnimatePresence>
-          </div>
-        </div>
-      </motion.div>
 
-      {/* static scrims: top vignette + base for the name */}
-      <div aria-hidden className="absolute inset-x-0 top-0 h-[46%] bg-gradient-to-b from-black/60 via-black/25 to-transparent" />
-      <div aria-hidden className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-bg via-bg/35 to-transparent" />
-
-      {/* ── content ── */}
-      <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-6 pt-28 md:px-12 md:pt-32">
-        {/* top row: disciplines (left) · socials (right) */}
-        <div className="flex items-start justify-between">
-          <motion.p
-            initial={reduce ? false : { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.35, ease }}
-            className="max-w-[16rem] font-body text-sm leading-relaxed text-ink/90 md:text-base"
-          >
-            {hero.disciplines.map((d, i) => (
-              <span key={d}>
-                {d} {i < hero.disciplines.length - 1 && <span className="text-accent">/ </span>}
+            {/* REC status, top-left */}
+            <div className="absolute left-4 top-4 flex items-center gap-2">
+              <motion.span
+                className="h-2 w-2 rounded-full bg-accent"
+                animate={reduce ? undefined : { opacity: [1, 0.25, 1] }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/85">
+                {site.city}
               </span>
-            ))}
-            <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
-              {hero.location}
-            </span>
-          </motion.p>
-
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.45, ease }}
-            className="flex flex-col gap-2 sm:flex-row"
-          >
-            <a
-              href={site.instagram}
-              rel="noopener noreferrer"
-              target="_blank"
-              aria-label="Instagram"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-bg/40 text-ink backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
-            >
-              <Instagram size={17} />
-            </a>
-            <a
-              href={`mailto:${site.email}`}
-              aria-label="Email me"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-bg/40 text-ink backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
-            >
-              <Mail size={17} />
-            </a>
-          </motion.div>
-        </div>
-
-        {/* bottom block: CTAs (left) · carousel arrows (right) · greeting */}
-        <div className="mt-auto">
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6, ease }}
-            className="mb-8 flex flex-wrap items-center justify-between gap-4"
-          >
-            <div className="flex flex-wrap items-center gap-3">
-              <Button href={hero.ctaPrimary.href} variant="ghost" className="!bg-bg/30 backdrop-blur-md">
-                {hero.ctaPrimary.label}
-              </Button>
-              <Button href={hero.ctaSecondary.href} variant="ghost" className="!bg-bg/30 backdrop-blur-md">
-                {hero.ctaSecondary.label}
-              </Button>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => paginate(-1)}
-                aria-label="Previous photo"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-bg/40 text-ink backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                type="button"
-                onClick={() => paginate(1)}
-                aria-label="Next photo"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-bg/40 text-ink backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
-              >
-                <ChevronRight size={18} />
-              </button>
+
+            {/* arrows (contained inside the card — can't overlap page content) */}
+            <button
+              type="button"
+              onClick={() => go(-1)}
+              aria-label="Previous photo"
+              className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/30 text-white backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
+            >
+              <ChevronLeft size={17} />
+            </button>
+            <button
+              type="button"
+              onClick={() => go(1)}
+              aria-label="Next photo"
+              className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/30 text-white backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
+            >
+              <ChevronRight size={17} />
+            </button>
+
+            {/* bottom bar: live EXIF + slide counter */}
+            <div className="absolute inset-x-4 bottom-4 flex items-end justify-between">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.35 }}
+                  className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/85"
+                >
+                  {slide.caption}
+                </motion.span>
+              </AnimatePresence>
+              <span className="font-mono text-[10px] tracking-[0.25em] text-white/85">
+                <span className="text-accent">{pad(index)}</span> / {pad(count - 1)}
+              </span>
             </div>
-          </motion.div>
-
-          <motion.p
-            initial={reduce ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.75 }}
-            className="mb-1 font-mono text-xs uppercase tracking-[0.3em] text-ink/80 md:text-sm"
-          >
-            {hero.greeting}
-          </motion.p>
-        </div>
-      </div>
-
-      {/* the giant name — cropped by the bottom edge */}
-      <div className="relative z-10 overflow-hidden">
-        <motion.h1
-          aria-label={site.name}
-          initial={reduce ? false : { y: "55%", opacity: 0 }}
-          animate={{ y: "14%", opacity: 1 }}
-          transition={{ duration: 1.1, delay: 0.85, ease }}
-          className="w-full select-none text-center font-display font-semibold leading-[0.8] tracking-[-0.04em] text-[clamp(6rem,25.5vw,25rem)] text-transparent"
-          style={{
-            backgroundImage:
-              "linear-gradient(to bottom, color-mix(in srgb, var(--text) 55%, transparent), color-mix(in srgb, var(--text) 95%, transparent) 55%, var(--text))",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-          }}
-        >
-          {hero.bigName}
-        </motion.h1>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

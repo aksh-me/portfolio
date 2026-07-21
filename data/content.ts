@@ -31,14 +31,12 @@ export const site = {
 /* ── Hero ──────────────────────────────────────────────────────────────────── */
 
 export const hero = {
-  // top-left disciplines line and location
-  disciplines: ["Photography", "Video", "Web Design"],
-  location: "St. John's, NL",
-  greeting: "Hey! I'm…",
-  // the giant bottom-cropped display name
-  bigName: "AKSH",
-  ctaPrimary: { label: "See the work", href: "/work" },
-  ctaSecondary: { label: "Book a shoot", href: "/contact" },
+  eyebrow: "ST. JOHN'S, NL — PHOTO · VIDEO · WEB DESIGN",
+  // Words wrapped in *asterisks* render as the crimson italic accent.
+  headline: "I capture the moments most people *walk* *past*.",
+  sub: "Hey, I'm Aksh — a photographer, filmmaker and web designer turning everyday light into things worth keeping.",
+  ctaPrimary: { label: "Book a shoot", href: "/contact" },
+  ctaSecondary: { label: "See the work", href: "/work" },
   // Hero carousel: arrows + auto-advance. Captions are each shot's real EXIF,
   // shown under the viewfinder frame. Add/remove slides freely.
   slides: [
