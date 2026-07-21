@@ -2,11 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "@/components/providers/ThemeProvider";
-import LenisProvider from "@/components/providers/LenisProvider";
-import Cursor from "@/components/Cursor";
-import Preloader from "@/components/Preloader";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
+import AppShell from "@/components/AppShell";
 import { site } from "@/data/content";
 import JsonLd from "@/components/JsonLd";
 
@@ -88,19 +84,7 @@ export default function RootLayout({
       <body className="bg-bg font-body text-ink antialiased">
         <JsonLd />
         <ThemeProvider>
-          <LenisProvider>
-            <a
-              href="#main"
-              className="sr-only z-[200] rounded-sm bg-accent px-4 py-2 font-mono text-sm text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
-            >
-              Skip to content
-            </a>
-            <Preloader />
-            <Cursor />
-            <Nav />
-            <main id="main">{children}</main>
-            <Footer />
-          </LenisProvider>
+          <AppShell>{children}</AppShell>
         </ThemeProvider>
       </body>
     </html>
