@@ -10,25 +10,26 @@ import { defaultContent } from "@/data/defaults";
  * these credentials.
  *
  * Backends, in order of preference:
- *   1. Upstash Redis  → set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN
- *      (the production database; also works locally).
+ *   1. Supabase  → set SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY. Content is
+ *      one row (id = 1) in a `site_content` table (jsonb column `data`). The
+ *      service-role key is server-only and bypasses RLS.
  *   2. Local JSON file (dev only) → data/portfolio.local.json, so you can
  *      test the full edit→save→display loop with no cloud setup.
  *   3. Fallback defaults → the site still renders if nothing is configured.
  */
 
-const REDIS_KEY = "portfolio:content";
+const TABLE = "site_content";
+const ROW_ID = 1;
 const LOCAL_FILE = path.join(process.cwd(), "data", "portfolio.local.json");
 
-function hasRedis() {
-  return Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+function hasSupabase() {
+  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
 
-async function getRedis() {
-  const { Redis } = await import("@upstash/redis");
-  return new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL!,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+async function getSupabase() {
+  const { createClient } = await import("@supabase/supabase-js");
+  return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: { persistSession: false, autoRefreshToken: false },
   });
 }
 
@@ -36,8 +37,10 @@ async function getRedis() {
 export async function getContent(): Promise<PortfolioContent> {
   try {
     let raw: unknown;
-    if (hasRedis()) {
-      raw = await (await getRedis()).get(REDIS_KEY);
+    if (hasSupabase()) {
+      const supabase = await getSupabase();
+      const { data } = await supabase.from(TABLE).select("data").eq("id", ROW_ID).maybeSingle();
+      raw = data?.data ?? null;
     } else {
       const file = await fs.readFile(LOCAL_FILE, "utf8").catch(() => null);
       raw = file ? JSON.parse(file) : null;
@@ -53,8 +56,16 @@ export async function getContent(): Promise<PortfolioContent> {
 
 /** Persist validated content. Throws with a clear message if no store exists. */
 export async function saveContent(data: PortfolioContent): Promise<void> {
-  if (hasRedis()) {
-    await (await getRedis()).set(REDIS_KEY, data);
+  if (hasSupabase()) {
+    const supabase = await getSupabase();
+    const { error } = await supabase
+      .from(TABLE)
+      .upsert({ id: ROW_ID, data, updated_at: new Date().toISOString() });
+    if (error) {
+      throw new Error(
+        `Could not save to Supabase (${error.message}). Make sure the "site_content" table exists.`
+      );
+    }
     return;
   }
   if (process.env.NODE_ENV !== "production") {
@@ -63,6 +74,6 @@ export async function saveContent(data: PortfolioContent): Promise<void> {
     return;
   }
   throw new Error(
-    "No database configured. Add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in your environment."
+    "No database configured. Add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in your environment."
   );
 }
