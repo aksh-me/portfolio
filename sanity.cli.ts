@@ -8,5 +8,5 @@ export default defineCliConfig({
     dataset: "production",
   },
   studioHost: "axsh-portfolio", // → axsh-portfolio.sanity.studio
-  autoUpdates: true,
+  deployment: { autoUpdates: true },
 });

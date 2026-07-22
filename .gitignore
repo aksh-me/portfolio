@@ -31,3 +31,7 @@ next-env.d.ts
 # Sanity build artifacts
 /dist
 /.sanity
+
+# Self-hosted studio (generated at build)
+/public/admin
+/.studiobuild

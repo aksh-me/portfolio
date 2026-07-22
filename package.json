@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build:studio": "sanity build .studiobuild -y && node scripts/stage-studio.mjs",
+    "build": "npm run build:studio && next build",
     "start": "next start"
   },
   "dependencies": {
