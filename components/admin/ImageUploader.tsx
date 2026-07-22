@@ -10,6 +10,59 @@ interface ImageUploaderProps {
   label?: string;
 }
 
+// Client-side canvas image compressor (Max dimension: 2400px, output: WebP format)
+async function compressImage(file: File, maxDimension = 2400, quality = 0.85): Promise<File> {
+  if (!file.type.startsWith("image/") || file.type.includes("svg") || file.type.includes("gif")) {
+    return file;
+  }
+
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new window.Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              resolve(file);
+              return;
+            }
+            const compressedFile = new File(
+              [blob],
+              file.name.replace(/\.[^/.]+$/, "") + ".webp",
+              { type: "image/webp" }
+            );
+            resolve(compressedFile);
+          },
+          "image/webp",
+          quality
+        );
+      };
+      img.onerror = () => resolve(file);
+    };
+    reader.onerror = () => resolve(file);
+  });
+}
+
 export default function ImageUploader({
   value,
   onChange,
@@ -18,19 +71,22 @@ export default function ImageUploader({
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
 
     setUploading(true);
 
     try {
+      // Compress and optimize image to WebP before uploading
+      const file = await compressImage(rawFile);
+
       const supabase = createClient();
       if (supabase) {
         const fileExt = file.name.split(".").pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
         const filePath = `uploads/${fileName}`;
 
-        const { data, error } = await supabase.storage
+        const { error } = await supabase.storage
           .from("portfolio-media")
           .upload(filePath, file, {
             upsert: true,
@@ -57,7 +113,7 @@ export default function ImageUploader({
 
         if (!res.ok) {
           if (res.status === 413) {
-            throw new Error("File is too large for serverless upload (max 4.5MB). Please configure Supabase keys to upload larger files.");
+            throw new Error("File is too large for serverless upload. Configure Supabase keys for unlimited file sizes.");
           }
           const text = await res.text();
           throw new Error(text || `Server returned error ${res.status}`);
@@ -111,7 +167,7 @@ export default function ImageUploader({
             {uploading ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>Uploading to Supabase CDN...</span>
+                <span>Optimizing & Uploading WebP...</span>
               </>
             ) : (
               <>
