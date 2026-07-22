@@ -26,9 +26,20 @@ function hasSupabase() {
   return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
 
+// Normalize to just the origin (https://<ref>.supabase.co) so a pasted
+// trailing slash or stray path can't produce an "Invalid path" error.
+function supabaseUrl() {
+  const raw = process.env.SUPABASE_URL!.trim();
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return raw.replace(/\/+$/, "");
+  }
+}
+
 async function getSupabase() {
   const { createClient } = await import("@supabase/supabase-js");
-  return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+  return createClient(supabaseUrl(), process.env.SUPABASE_SERVICE_ROLE_KEY!.trim(), {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
