@@ -7,16 +7,11 @@ import ServicesSnapshot from "@/components/home/ServicesSnapshot";
 import Testimonials from "@/components/home/Testimonials";
 import JournalTeaser from "@/components/home/JournalTeaser";
 import CtaBand from "@/components/home/CtaBand";
-import { getContent } from "@/lib/db";
 
-// Live content — always reflects the latest admin save.
-export const dynamic = "force-dynamic";
-
-export default async function HomePage() {
-  const { hero } = await getContent();
+export default function HomePage() {
   return (
     <>
-      <Hero content={hero} />
+      <Hero />
       <SelectedWork />
       <PhotoStrip />
       <TrailsTeaser />

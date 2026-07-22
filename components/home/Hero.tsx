@@ -5,7 +5,6 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { hero, site } from "@/data/content";
-import type { Hero as HeroContent } from "@/lib/validations";
 import Button from "@/components/Button";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
@@ -24,10 +23,7 @@ import Reveal from "@/components/Reveal";
 
 const pad = (n: number) => String(n + 1).padStart(2, "0");
 
-export default function Hero({ content }: { content?: HeroContent }) {
-  // editable text comes from the CMS (falls back to the static file); the
-  // carousel slides are not yet editable, so they stay in data/content.ts
-  const c = content ?? hero;
+export default function Hero() {
   const [index, setIndex] = useState(0);
   const reduce = useReducedMotion();
   const count = hero.slides.length;
@@ -49,16 +45,16 @@ export default function Hero({ content }: { content?: HeroContent }) {
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         {/* ── left: type ── */}
         <div>
-          <SectionHeading as="h1" size="display-2" eyebrow={c.eyebrow} title={c.headline} />
+          <SectionHeading as="h1" size="display-2" eyebrow={hero.eyebrow} title={hero.headline} />
           <Reveal delay={0.15} className="mt-8 max-w-md">
-            <p className="text-base leading-relaxed text-muted md:text-lg">{c.sub}</p>
+            <p className="text-base leading-relaxed text-muted md:text-lg">{hero.sub}</p>
           </Reveal>
           <Reveal delay={0.25} className="mt-10 flex flex-wrap items-center gap-3">
-            <Button href={c.ctaPrimary.href} variant="solid">
-              {c.ctaPrimary.label}
+            <Button href={hero.ctaPrimary.href} variant="solid">
+              {hero.ctaPrimary.label}
             </Button>
-            <Button href={c.ctaSecondary.href} variant="ghost">
-              {c.ctaSecondary.label}
+            <Button href={hero.ctaSecondary.href} variant="ghost">
+              {hero.ctaSecondary.label}
             </Button>
           </Reveal>
         </div>

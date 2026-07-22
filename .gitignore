@@ -30,5 +30,3 @@ next-env.d.ts
 
 
 
-# Local dev content store
-/data/portfolio.local.json
