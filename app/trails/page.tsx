@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { trails, site } from "@/data/content";
+import { getTrailsData, getSiteData } from "@/lib/content-db";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 
@@ -9,7 +9,12 @@ export const metadata: Metadata = {
   description: "The hikes behind the landscape work — trails logged around Newfoundland.",
 };
 
-export default function TrailsPage() {
+export default async function TrailsPage() {
+  const [trails, site] = await Promise.all([
+    getTrailsData(),
+    getSiteData(),
+  ]);
+
   return (
     <div className="mx-auto max-w-[1600px] px-6 pt-36 md:px-12 md:pt-44">
       <SectionHeading
@@ -22,7 +27,7 @@ export default function TrailsPage() {
 
       {/* stats */}
       <Reveal className="mt-14 grid grid-cols-3 gap-6 border-y border-line py-8">
-        {trails.stats.map((s) => (
+        {trails.stats?.map((s: any) => (
           <div key={s.label}>
             <p className="font-display text-3xl font-medium md:text-5xl">{s.value}</p>
             <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted md:text-xs">
@@ -34,7 +39,7 @@ export default function TrailsPage() {
 
       {/* trail list — alternating editorial rows */}
       <div className="mt-16 space-y-16 md:mt-24 md:space-y-28">
-        {trails.list.map((trail, i) => (
+        {trails.list?.map((trail: any, i: number) => (
           <Reveal key={trail.name}>
             <article
               className={`grid items-center gap-8 md:grid-cols-2 md:gap-16 ${
@@ -42,7 +47,6 @@ export default function TrailsPage() {
               }`}
             >
               <figure className="relative aspect-[4/3] overflow-hidden">
-                {/* REPLACE: swap for your own trail photo (see data/content.ts) */}
                 <Image
                   src={trail.image}
                   alt={`${trail.name} — ${trail.location}`}

@@ -3,19 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { projects } from "@/data/content";
+import { getProjectsData } from "@/lib/content-db";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 
 type Params = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const projects = await getProjectsData();
+  const project = projects.find((p: any) => p.slug === slug);
   if (!project) return {};
   return {
     title: project.title,
@@ -26,7 +23,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function CaseStudyPage({ params }: Params) {
   const { slug } = await params;
-  const index = projects.findIndex((p) => p.slug === slug);
+  const projects = await getProjectsData();
+  const index = projects.findIndex((p: any) => p.slug === slug);
   if (index === -1) notFound();
   const project = projects[index];
   const next = projects[(index + 1) % projects.length];
@@ -44,7 +42,6 @@ export default async function CaseStudyPage({ params }: Params) {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent" />
-        {/* subtle top band so the nav stays readable over bright photos */}
         <div className="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-bg via-bg/55 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-[1600px] px-6 pb-12 md:px-12">
           <SectionHeading as="h1" size="display-1" title={project.title} eyebrow={project.summary} />
@@ -73,13 +70,12 @@ export default async function CaseStudyPage({ params }: Params) {
           </p>
         </Reveal>
 
-        {/* Live site embedded — the real thing, not a screenshot */}
+        {/* Live site embedded */}
         {project.liveUrl && (
           <Reveal className="mt-20">
             <p className="mb-4 hidden font-mono text-xs uppercase tracking-[0.3em] text-muted md:block">
               Live preview
             </p>
-            {/* embedded preview is desktop-only; phones get the button below */}
             <div className="relative hidden overflow-hidden rounded-sm border border-line bg-surface md:block md:aspect-[16/10]">
               <iframe
                 src={project.liveUrl}
@@ -101,8 +97,8 @@ export default async function CaseStudyPage({ params }: Params) {
         )}
 
         <div className="mt-20 grid gap-8 md:grid-cols-2">
-          {project.images.map((src, i) => (
-            <Reveal key={src} delay={i * 0.1}>
+          {project.images?.map((src: string, i: number) => (
+            <Reveal key={src + i} delay={i * 0.1}>
               <div className="relative aspect-[16/10] overflow-hidden">
                 <Image
                   src={src}
@@ -117,17 +113,19 @@ export default async function CaseStudyPage({ params }: Params) {
         </div>
 
         {/* next project */}
-        <Reveal className="mt-28 border-t border-line pt-12">
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted">Next project</p>
-          <Link
-            href={`/work/${next.slug}`}
-            data-cursor="View"
-            className="group mt-4 inline-flex items-center gap-4 font-display text-3xl font-medium transition-colors hover:text-accent md:text-5xl"
-          >
-            {next.title}
-            <ArrowRight className="transition-transform duration-300 group-hover:translate-x-2" size={32} />
-          </Link>
-        </Reveal>
+        {next && (
+          <Reveal className="mt-28 border-t border-line pt-12">
+            <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted">Next project</p>
+            <Link
+              href={`/work/${next.slug}`}
+              data-cursor="View"
+              className="group mt-4 inline-flex items-center gap-4 font-display text-3xl font-medium transition-colors hover:text-accent md:text-5xl"
+            >
+              {next.title}
+              <ArrowRight className="transition-transform duration-300 group-hover:translate-x-2" size={32} />
+            </Link>
+          </Reveal>
+        )}
       </div>
     </article>
   );

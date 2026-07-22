@@ -6,13 +6,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Globe, LayoutGrid } from "lucide-react";
-import { galleryItems, site } from "@/data/content";
+import { projects, photos, GalleryItem } from "@/data/content";
 import Clock from "@/components/Clock";
 import { StaggerLabel } from "@/components/Button";
 
 const MotionLink = motion.create(Link);
 
-// Three.js only ever runs on the client
 const SphereGallery = dynamic(() => import("./SphereGallery"), { ssr: false });
 
 type Mode = "sphere" | "list";
@@ -24,9 +23,42 @@ const chromeNav = [
   { label: "Contact", href: "/contact" },
 ];
 
-export default function WorkClient() {
-  // null until we know whether this device should get WebGL
+export default function WorkClient({
+  projectsData,
+  photosData,
+}: {
+  projectsData?: typeof projects;
+  photosData?: typeof photos;
+}) {
   const [mode, setMode] = useState<Mode | null>(null);
+
+  const currentProjects = projectsData || projects;
+  const currentPhotos = photosData || photos;
+
+  const items: GalleryItem[] = [
+    ...currentProjects.map((p) => ({
+      id: `pr-${p.slug}`,
+      caption: (p.client || "").toUpperCase(),
+      title: p.title,
+      tags: p.tags,
+      year: p.year,
+      image: p.hero.replace("/1600/1000", "/800/500"),
+      href: `/work/${p.slug}`,
+    })),
+    ...currentPhotos
+      .filter((p) => p.featured)
+      .map((p) => ({
+        id: p.id,
+        caption: p.category.toUpperCase(),
+        title: p.alt,
+        tags: ["PHOTO", p.category.toUpperCase()],
+        year: "2025",
+        image: p.src.startsWith("http")
+          ? p.src
+          : `/_next/image?url=${encodeURIComponent(p.src)}&w=750&q=70`,
+        href: "/photography",
+      })),
+  ];
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -43,92 +75,82 @@ export default function WorkClient() {
 
   return (
     <div className={mode === "sphere" ? "relative h-[100dvh] overflow-hidden bg-bg" : "min-h-screen bg-bg"}>
-      {mode === "sphere" && <SphereGallery items={galleryItems} />}
+      {mode === "sphere" && <SphereGallery items={items} />}
 
-      {mode === "list" && <ListView />}
+      {mode === "list" && <ListView items={items} />}
 
       {/* ── UI chrome over the gallery ── */}
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-center justify-between px-6 py-5 md:px-10">
-        <Link
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-center justify-between p-6 md:p-12">
+        <MotionLink
           href="/"
-          className="pointer-events-auto font-display text-lg font-semibold tracking-tight"
-          aria-label={`${site.name} — home`}
+          data-cursor="Home"
+          className="pointer-events-auto group inline-flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-fg transition-opacity hover:opacity-80"
+          whileTap={{ scale: 0.96 }}
         >
-          {site.name}
-          <span className="text-accent">.</span>
-        </Link>
-        <p className="hidden font-mono text-xs uppercase tracking-[0.25em] text-muted md:block">
-          {site.studioLine}
-        </p>
-        <div className="pointer-events-auto flex items-center gap-5">
-          <Clock className="hidden sm:inline" />
-          <MotionLink
-            href="/contact"
-            initial="rest"
-            animate="rest"
-            whileHover="hover"
-            className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+          <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+          <StaggerLabel text="AKSH PATEL" />
+        </MotionLink>
+
+        <div className="pointer-events-auto flex items-center gap-6 md:gap-10">
+          <nav className="hidden items-center gap-8 md:flex">
+            {chromeNav.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="font-mono text-xs uppercase tracking-[0.2em] text-muted transition-colors hover:text-fg"
+              >
+                <StaggerLabel text={link.label} />
+              </Link>
+            ))}
+          </nav>
+
+          <Clock />
+
+          <button
+            onClick={() => setMode((m) => (m === "sphere" ? "list" : "sphere"))}
+            className="flex items-center gap-2 rounded-full border border-line bg-surface/80 px-4 py-2 font-mono text-xs uppercase tracking-widest text-fg backdrop-blur-md transition-colors hover:bg-surface"
           >
-            <StaggerLabel text="Let's talk" />
-          </MotionLink>
+            {mode === "sphere" ? (
+              <>
+                <LayoutGrid className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Grid view</span>
+              </>
+            ) : (
+              <>
+                <Globe className="h-3.5 w-3.5 text-accent" />
+                <span className="hidden sm:inline">3D Sphere</span>
+              </>
+            )}
+          </button>
         </div>
-      </div>
+      </header>
 
-      {/* floating pill nav, bottom-center */}
-      <nav
-        className="pointer-events-auto fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full border border-line bg-surface/80 p-1.5 backdrop-blur-xl"
-        aria-label="Gallery navigation"
-      >
-        {chromeNav.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`rounded-full px-3 py-2 text-xs transition-colors sm:px-4 sm:text-sm ${
-              item.href === "/work" ? "bg-accent text-white" : "text-muted hover:text-ink"
-            }`}
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-
-      {/* view toggles, bottom-left */}
-      {/* stacked above the pill nav on phones, bottom-left on desktop */}
-      <div className="pointer-events-auto fixed bottom-[4.75rem] left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full border border-line bg-surface/80 p-1.5 backdrop-blur-xl md:bottom-6 md:left-10 md:translate-x-0">
-        <button
-          type="button"
-          onClick={() => setMode("sphere")}
-          aria-label="Sphere view"
-          aria-pressed={mode === "sphere"}
-          className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
-            mode === "sphere" ? "bg-accent text-white" : "text-muted hover:text-ink"
-          }`}
-        >
-          <Globe size={15} />
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("list")}
-          aria-label="List view"
-          aria-pressed={mode === "list"}
-          className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
-            mode === "list" ? "bg-accent text-white" : "text-muted hover:text-ink"
-          }`}
-        >
-          <LayoutGrid size={15} />
-        </button>
-      </div>
+      <footer className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex items-center justify-between p-6 font-mono text-[10px] uppercase tracking-[0.25em] text-muted md:p-12">
+        <span>St. John's, NL</span>
+        <span className="hidden sm:inline">
+          {mode === "sphere" ? "Drag to rotate · Click to inspect" : "All work"}
+        </span>
+        <span>{items.length} cards</span>
+      </footer>
     </div>
   );
 }
 
-/** Flat fallback grid — mobile-friendly, reduced-motion-friendly, no WebGL needed. */
-function ListView() {
+function ListView({ items }: { items: GalleryItem[] }) {
   return (
-    <div className="mx-auto max-w-[1600px] px-6 pb-40 pt-28 md:px-10">
-      <h1 className="sr-only">Selected work</h1>
+    <div className="mx-auto max-w-[1600px] px-6 pb-24 pt-32 md:px-12 md:pt-40">
+      <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">Selected work</p>
+          <h1 className="mt-2 text-3xl font-light md:text-5xl">Websites & photography</h1>
+        </div>
+        <p className="font-mono text-xs uppercase tracking-widest text-muted">
+          {items.length} projects & featured shots
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-        {galleryItems.map((item) => (
+        {items.map((item) => (
           <Link
             key={item.id}
             href={item.href}

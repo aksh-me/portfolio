@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SectionHeading from "@/components/SectionHeading";
 import GalleryClient from "@/components/photography/GalleryClient";
+import { getPhotosData } from "@/lib/content-db";
 
 export const metadata: Metadata = {
   title: "Photography in St. John's, NL",
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/photography" },
 };
 
-export default function PhotographyPage() {
+export default async function PhotographyPage() {
+  const photosData = await getPhotosData();
+
   return (
     <div className="mx-auto max-w-[1600px] px-6 pt-36 md:px-12 md:pt-44">
       <SectionHeading
@@ -22,7 +25,7 @@ export default function PhotographyPage() {
         A rolling selection from recent shoots. Every frame here was made for a
         real person or a real brand — no staged stock, ever.
       </p>
-      <GalleryClient />
+      <GalleryClient photosData={photosData} />
     </div>
   );
 }

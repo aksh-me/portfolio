@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
-import { services, process, type ServicePackage } from "@/data/content";
+import { getServicesData, getProcessData } from "@/lib/content-db";
+import { type ServicePackage } from "@/data/content";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 import Button from "@/components/Button";
@@ -39,7 +40,12 @@ function PackageCard({ pkg, delay }: { pkg: ServicePackage; delay: number }) {
   );
 }
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const [services, process] = await Promise.all([
+    getServicesData(),
+    getProcessData(),
+  ]);
+
   return (
     <div className="mx-auto max-w-[1600px] px-6 pt-36 md:px-12 md:pt-44">
       <SectionHeading
@@ -58,7 +64,7 @@ export default function ServicesPage() {
       <section className="mt-24">
         <SectionHeading eyebrow="What I do" title="How I can *help*" />
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {services.offerings.map((pkg, i) => (
+          {services.offerings?.map((pkg: any, i: number) => (
             <PackageCard key={pkg.name} pkg={pkg} delay={i * 0.08} />
           ))}
         </div>
@@ -68,7 +74,7 @@ export default function ServicesPage() {
       <section className="mt-28">
         <SectionHeading eyebrow="How I work" title="Four steps, no *mystery*" />
         <div className="mt-12 grid gap-px border border-line bg-line md:grid-cols-4">
-          {process.map((step, i) => (
+          {process?.map((step: any, i: number) => (
             <Reveal key={step.step} delay={i * 0.08} className="bg-bg">
               <div className="h-full p-8">
                 <span className="font-mono text-xs text-accent">{step.step}</span>

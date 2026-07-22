@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { posts } from "@/data/content";
+import { getPostsData } from "@/lib/content-db";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
   description: "Notes on design, photography, and the places where they overlap.",
 };
 
-export default function JournalPage() {
+export default async function JournalPage() {
+  const posts = await getPostsData();
+
   return (
     <div className="mx-auto max-w-[1600px] px-6 pt-36 md:px-12 md:pt-44">
       <SectionHeading

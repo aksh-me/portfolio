@@ -17,7 +17,8 @@ import Reveal from "@/components/Reveal";
  * recomputed every frame from the card's distance to the viewport center,
  * so the curve holds while dragging and scrolling.
  */
-export default function PhotoStrip() {
+export default function PhotoStrip({ photosData }: { photosData?: typeof photos }) {
+  const currentPhotos = photosData || photos;
   const sectionRef = useRef<HTMLElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
@@ -63,7 +64,7 @@ export default function PhotoStrip() {
   }, [reduce]);
 
   // featured shots span all categories, so the strip stays varied
-  const strip = photos.filter((p) => p.featured).slice(0, 8);
+  const strip = currentPhotos.filter((p) => p.featured).slice(0, 8);
 
   return (
     <section ref={sectionRef} className="overflow-hidden pt-28 md:pt-40">

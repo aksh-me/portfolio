@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Camera, Wrench } from "lucide-react";
-import { about, site } from "@/data/content";
+import { getAboutData, getSiteData } from "@/lib/content-db";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 import Button from "@/components/Button";
@@ -13,7 +13,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [about, site] = await Promise.all([
+    getAboutData(),
+    getSiteData(),
+  ]);
+
   return (
     <div className="mx-auto max-w-[1600px] px-6 pt-36 md:px-12 md:pt-44">
       <SectionHeading
@@ -26,7 +31,6 @@ export default function AboutPage() {
       <div className="mt-16 grid gap-12 md:grid-cols-[2fr_3fr] md:gap-20">
         <Reveal>
           <div className="relative aspect-[3/4] overflow-hidden md:sticky md:top-28">
-            {/* REPLACE: portrait — swap for your own photo */}
             <Image
               src={about.portrait}
               alt={`Portrait of ${site.name}`}
@@ -39,7 +43,7 @@ export default function AboutPage() {
         </Reveal>
 
         <div>
-          {about.story.map((paragraph, i) => (
+          {about.story?.map((paragraph: string, i: number) => (
             <Reveal key={i} delay={i * 0.08}>
               <p className={`leading-relaxed ${i === 0 ? "font-display text-xl font-medium md:text-2xl" : "mt-8 text-muted"}`}>
                 {paragraph}
@@ -53,7 +57,7 @@ export default function AboutPage() {
               <Wrench size={14} className="text-accent" /> Tools of the trade
             </h2>
             <ul className="mt-5 flex flex-wrap gap-2">
-              {about.tools.map((tool) => (
+              {about.tools?.map((tool: string) => (
                 <li
                   key={tool}
                   className="rounded-full border border-line px-4 py-1.5 font-mono text-xs text-muted"
@@ -70,7 +74,7 @@ export default function AboutPage() {
               <Camera size={14} className="text-accent" /> In the camera bag
             </h2>
             <ul className="mt-5 space-y-2">
-              {about.gear.map((item) => (
+              {about.gear?.map((item: string) => (
                 <li key={item} className="font-mono text-sm text-muted">
                   — {item}
                 </li>
@@ -82,8 +86,8 @@ export default function AboutPage() {
           <Reveal className="mt-16">
             <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-muted">Milestones</h2>
             <ol className="mt-6">
-              {about.milestones.map((m) => (
-                <li key={m.year} className="flex gap-8 border-t border-line py-5 last:border-b">
+              {about.milestones?.map((m: any, idx: number) => (
+                <li key={m.year + idx} className="flex gap-8 border-t border-line py-5 last:border-b">
                   <span className="font-mono text-sm text-accent">{m.year}</span>
                   <span className="text-sm text-ink">{m.text}</span>
                 </li>

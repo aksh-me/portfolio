@@ -9,12 +9,13 @@ import Reveal from "@/components/Reveal";
 
 const filters = ["All", "Portraits", "Streets", "Nature", "Cars"] as const;
 
-export default function GalleryClient() {
+export default function GalleryClient({ photosData }: { photosData?: typeof photos }) {
+  const currentPhotos = photosData || photos;
   const [filter, setFilter] = useState<(typeof filters)[number]>("All");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const visible =
-    filter === "All" ? photos : photos.filter((p) => p.category === (filter as PhotoCategory));
+    filter === "All" ? currentPhotos : currentPhotos.filter((p) => p.category === (filter as PhotoCategory));
 
   return (
     <>

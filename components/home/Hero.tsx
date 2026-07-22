@@ -23,11 +23,13 @@ import Reveal from "@/components/Reveal";
 
 const pad = (n: number) => String(n + 1).padStart(2, "0");
 
-export default function Hero() {
+export default function Hero({ heroData, siteData }: { heroData?: typeof hero; siteData?: typeof site }) {
+  const currentHero = heroData || hero;
+  const currentSite = siteData || site;
   const [index, setIndex] = useState(0);
   const reduce = useReducedMotion();
-  const count = hero.slides.length;
-  const slide = hero.slides[index];
+  const count = currentHero.slides.length;
+  const slide = currentHero.slides[index];
 
   const go = useCallback((d: number) => setIndex((i) => (i + d + count) % count), [count]);
 
@@ -45,16 +47,16 @@ export default function Hero() {
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         {/* ── left: type ── */}
         <div>
-          <SectionHeading as="h1" size="display-2" eyebrow={hero.eyebrow} title={hero.headline} />
+          <SectionHeading as="h1" size="display-2" eyebrow={currentHero.eyebrow} title={currentHero.headline} />
           <Reveal delay={0.15} className="mt-8 max-w-md">
-            <p className="text-base leading-relaxed text-muted md:text-lg">{hero.sub}</p>
+            <p className="text-base leading-relaxed text-muted md:text-lg">{currentHero.sub}</p>
           </Reveal>
           <Reveal delay={0.25} className="mt-10 flex flex-wrap items-center gap-3">
-            <Button href={hero.ctaPrimary.href} variant="solid">
-              {hero.ctaPrimary.label}
+            <Button href={currentHero.ctaPrimary.href} variant="solid">
+              {currentHero.ctaPrimary.label}
             </Button>
-            <Button href={hero.ctaSecondary.href} variant="ghost">
-              {hero.ctaSecondary.label}
+            <Button href={currentHero.ctaSecondary.href} variant="ghost">
+              {currentHero.ctaSecondary.label}
             </Button>
           </Reveal>
         </div>

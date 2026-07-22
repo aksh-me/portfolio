@@ -3,19 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { posts } from "@/data/content";
+import { getPostsData } from "@/lib/content-db";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 
 type Params = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return posts.map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const post = posts.find((p) => p.slug === slug);
+  const posts = await getPostsData();
+  const post = posts.find((p: any) => p.slug === slug);
   if (!post) return {};
   return {
     title: post.title,
@@ -26,7 +23,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function JournalPostPage({ params }: Params) {
   const { slug } = await params;
-  const post = posts.find((p) => p.slug === slug);
+  const posts = await getPostsData();
+  const post = posts.find((p: any) => p.slug === slug);
   if (!post) notFound();
 
   return (
@@ -54,7 +52,7 @@ export default async function JournalPostPage({ params }: Params) {
       </Reveal>
 
       <div className="prose prose-lg mx-auto mt-16 max-w-3xl dark:prose-invert prose-p:leading-relaxed prose-p:text-ink/90">
-        {post.body.map((paragraph, i) => (
+        {post.body?.map((paragraph: string, i: number) => (
           <p key={i}>{paragraph}</p>
         ))}
       </div>

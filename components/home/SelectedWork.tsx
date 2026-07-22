@@ -8,8 +8,9 @@ import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 
 /** 4 featured projects in an alternating asymmetric grid. */
-export default function SelectedWork() {
-  const featured = projects.filter((p) => p.featured).slice(0, 4);
+export default function SelectedWork({ projectsData }: { projectsData?: typeof projects }) {
+  const currentProjects = projectsData || projects;
+  const featured = currentProjects.filter((p) => p.featured).slice(0, 4);
 
   return (
     <section className="mx-auto max-w-[1600px] px-6 pt-28 md:px-12 md:pt-40">

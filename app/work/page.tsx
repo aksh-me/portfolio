@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import WorkClient from "@/components/work/WorkClient";
+import { getProjectsData, getPhotosData } from "@/lib/content-db";
 
 export const metadata: Metadata = {
   title: "Work — Websites & Photography from St. John's, NL",
@@ -8,6 +9,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/work" },
 };
 
-export default function WorkPage() {
-  return <WorkClient />;
+export default async function WorkPage() {
+  const [projectsData, photosData] = await Promise.all([
+    getProjectsData(),
+    getPhotosData(),
+  ]);
+
+  return <WorkClient projectsData={projectsData} photosData={photosData} />;
 }

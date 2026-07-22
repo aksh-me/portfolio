@@ -7,13 +7,26 @@ import ServicesSnapshot from "@/components/home/ServicesSnapshot";
 import Testimonials from "@/components/home/Testimonials";
 import JournalTeaser from "@/components/home/JournalTeaser";
 import CtaBand from "@/components/home/CtaBand";
+import {
+  getSiteData,
+  getHeroData,
+  getProjectsData,
+  getPhotosData,
+} from "@/lib/content-db";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [siteData, heroData, projectsData, photosData] = await Promise.all([
+    getSiteData(),
+    getHeroData(),
+    getProjectsData(),
+    getPhotosData(),
+  ]);
+
   return (
     <>
-      <Hero />
-      <SelectedWork />
-      <PhotoStrip />
+      <Hero heroData={heroData} siteData={siteData} />
+      <SelectedWork projectsData={projectsData} />
+      <PhotoStrip photosData={photosData} />
       <TrailsTeaser />
       <AboutTeaser />
       <ServicesSnapshot />
