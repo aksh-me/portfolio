@@ -13,13 +13,13 @@ export default function AdminSitePage() {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/content")
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.success) {
-          setSite(res.data.site || {});
-          setHero(res.data.hero || {});
-        }
+    Promise.all([
+      fetch("/api/admin/content?section=site").then((r) => r.json()),
+      fetch("/api/admin/content?section=hero").then((r) => r.json()),
+    ])
+      .then(([r1, r2]) => {
+        if (r1.success) setSite(r1.data.site || {});
+        if (r2.success) setHero(r2.data.hero || {});
       })
       .finally(() => setLoading(false));
   }, []);

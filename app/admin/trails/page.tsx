@@ -14,7 +14,7 @@ export default function AdminTrailsPage() {
   const [activeForm, setActiveForm] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/admin/content")
+    fetch("/api/admin/content?section=trails")
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {

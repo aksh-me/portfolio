@@ -11,7 +11,7 @@ export default function AdminServicesPage() {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/content")
+    fetch("/api/admin/content?section=services")
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {

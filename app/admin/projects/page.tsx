@@ -24,7 +24,7 @@ export default function AdminProjectsPage() {
   const [activeForm, setActiveForm] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/admin/content")
+    fetch("/api/admin/content?section=projects")
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
@@ -363,7 +363,7 @@ export default function AdminProjectsPage() {
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-xl bg-neutral-950 border border-neutral-800 overflow-hidden flex-shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={proj.hero} alt={proj.title} className="w-full h-full object-cover" />
+                <img src={proj.hero} alt={proj.title} loading="lazy" decoding="async" className="w-full h-full object-cover" />
               </div>
 
               <div>

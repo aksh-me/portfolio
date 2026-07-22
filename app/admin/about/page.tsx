@@ -12,7 +12,7 @@ export default function AdminAboutPage() {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    fetch("/api/admin/content")
+    fetch("/api/admin/content?section=about")
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {

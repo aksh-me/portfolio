@@ -25,7 +25,7 @@ export default function AdminPhotosPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   useEffect(() => {
-    fetch("/api/admin/content")
+    fetch("/api/admin/content?section=photos")
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
@@ -315,6 +315,8 @@ export default function AdminPhotosPage() {
                 <img
                   src={photo.src}
                   alt={photo.alt}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 />
 

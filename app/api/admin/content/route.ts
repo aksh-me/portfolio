@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getAllPortfolioData } from "@/lib/content-db";
+import { getAllPortfolioData, getSectionData } from "@/lib/content-db";
+import * as staticContent from "@/data/content";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const section = searchParams.get("section");
+
+    if (section && (staticContent as any)[section] !== undefined) {
+      const fallback = (staticContent as any)[section];
+      const data = await getSectionData(section, fallback);
+      return NextResponse.json({ success: true, data: { [section]: data } });
+    }
+
     const data = await getAllPortfolioData();
     return NextResponse.json({ success: true, data });
   } catch (error: any) {

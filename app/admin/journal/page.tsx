@@ -23,7 +23,7 @@ export default function AdminJournalPage() {
   const [activeForm, setActiveForm] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/admin/content")
+    fetch("/api/admin/content?section=posts")
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
