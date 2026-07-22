@@ -12,7 +12,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Star,
-  Camera,
 } from "lucide-react";
 
 export default function AdminPhotosPage() {
@@ -152,7 +151,7 @@ export default function AdminPhotosPage() {
         </div>
       )}
 
-      {/* Edit / Add Modal or Inline Form */}
+      {/* Edit / Add Form */}
       {activeForm && (
         <div className="p-6 rounded-2xl bg-neutral-900 border border-red-900/50 space-y-6 shadow-2xl">
           <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
@@ -210,7 +209,7 @@ export default function AdminPhotosPage() {
 
               <div className="md:col-span-2">
                 <label className="block text-xs font-mono uppercase text-neutral-400 mb-1">
-                  Alt Text / Caption (describes the photograph)
+                  Alt Text / Caption
                 </label>
                 <input
                   type="text"
@@ -255,7 +254,7 @@ export default function AdminPhotosPage() {
                 className="w-4 h-4 rounded border-neutral-800 text-red-600 focus:ring-red-500 bg-neutral-950"
               />
               <label htmlFor="photo-featured" className="text-xs font-mono text-neutral-300">
-                Featured (Displays card on the 3D Interactive Spherical Work Gallery)
+                Featured (Displays card on 3D Interactive Sphere Gallery)
               </label>
             </div>
 
@@ -284,7 +283,7 @@ export default function AdminPhotosPage() {
         </div>
       )}
 
-      {/* Category Pills Filter */}
+      {/* Category Filters */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2">
         {categories.map((cat) => (
           <button
@@ -301,14 +300,15 @@ export default function AdminPhotosPage() {
         ))}
       </div>
 
-      {/* Grid View of Photos */}
+      {/* Optimized Grid View of Photos */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredPhotos.map((photo) => {
           const originalIndex = photos.findIndex((p) => p.id === photo.id);
           return (
             <div
               key={photo.id}
-              className="group p-3 rounded-2xl bg-neutral-900/40 border border-neutral-800 flex flex-col justify-between space-y-3 relative hover:border-neutral-700 transition"
+              className="group p-3 rounded-2xl bg-neutral-900/40 border border-neutral-800/90 flex flex-col justify-between space-y-3 relative hover:border-neutral-700 transition-colors duration-200"
+              style={{ contentVisibility: "auto", containIntrinsicSize: "0 300px" }}
             >
               <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-neutral-950">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -317,15 +317,15 @@ export default function AdminPhotosPage() {
                   alt={photo.alt}
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  className="w-full h-full object-cover transform-gpu will-change-transform group-hover:scale-105 transition-transform duration-300 ease-out"
                 />
 
-                <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-mono text-white">
+                <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-neutral-950/90 border border-neutral-800 text-[10px] font-mono text-neutral-300 pointer-events-none">
                   {photo.category}
                 </span>
 
                 {photo.featured && (
-                  <span className="absolute top-2 right-2 p-1 rounded-md bg-red-600/90 text-white">
+                  <span className="absolute top-2 right-2 p-1 rounded-md bg-red-600 text-white shadow-md pointer-events-none">
                     <Star className="w-3.5 h-3.5 fill-white" />
                   </span>
                 )}
@@ -339,7 +339,7 @@ export default function AdminPhotosPage() {
               <div className="flex items-center justify-between pt-2 border-t border-neutral-800/80">
                 <button
                   onClick={() => handleToggleFeatured(originalIndex)}
-                  className={`text-[10px] font-mono flex items-center gap-1 ${
+                  className={`text-[10px] font-mono flex items-center gap-1 transition-colors ${
                     photo.featured ? "text-yellow-400" : "text-neutral-500 hover:text-neutral-300"
                   }`}
                 >
@@ -350,13 +350,13 @@ export default function AdminPhotosPage() {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => handleOpenEdit(originalIndex)}
-                    className="p-1.5 text-neutral-400 hover:text-white rounded-md hover:bg-neutral-800 transition"
+                    className="p-1.5 text-neutral-400 hover:text-white rounded-md hover:bg-neutral-800 transition-colors"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => handleDelete(originalIndex)}
-                    className="p-1.5 text-neutral-400 hover:text-red-400 rounded-md hover:bg-red-950/30 transition"
+                    className="p-1.5 text-neutral-400 hover:text-red-400 rounded-md hover:bg-red-950/30 transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>

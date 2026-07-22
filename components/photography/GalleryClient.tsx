@@ -60,7 +60,7 @@ export default function GalleryClient({ photosData }: { photosData?: typeof phot
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   priority={i < 3}
-                  className="object-cover transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[1.04]"
+                  className="object-cover transform-gpu will-change-transform transition-transform duration-300 ease-out group-hover:scale-[1.04]"
                 />
               </div>
               <div className="mt-2 flex items-center justify-between gap-3">
