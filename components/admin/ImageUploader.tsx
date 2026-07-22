@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, Image as ImageIcon, Loader2, Check } from "lucide-react";
+import { Upload, Image as ImageIcon, Loader2 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 interface ImageUploaderProps {
   value: string;
@@ -15,39 +16,76 @@ export default function ImageUploader({
   label = "Upload Image",
 }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
 
     try {
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
+      const supabase = createClient();
+      if (supabase) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+        const filePath = `uploads/${fileName}`;
 
-      if (data.success && data.url) {
-        onChange(data.url);
+        const { data, error } = await supabase.storage
+          .from("portfolio-media")
+          .upload(filePath, file, {
+            upsert: true,
+            contentType: file.type,
+          });
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("portfolio-media").getPublicUrl(filePath);
+
+        onChange(publicUrl);
       } else {
-        alert(data.error || "Failed to upload image.");
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) {
+          if (res.status === 413) {
+            throw new Error("File is too large for serverless upload (max 4.5MB). Please configure Supabase keys to upload larger files.");
+          }
+          const text = await res.text();
+          throw new Error(text || `Server returned error ${res.status}`);
+        }
+
+        const data = await res.json();
+        if (data.success && data.url) {
+          onChange(data.url);
+        } else {
+          throw new Error(data.error || "Failed to upload image.");
+        }
       }
     } catch (err: any) {
-      alert(err.message || "Error uploading image");
+      alert(`Upload Error: ${err.message}`);
     } finally {
       setUploading(false);
+      e.target.value = "";
     }
   };
 
   return (
     <div className="space-y-2">
-      {label && <label className="block text-xs font-mono tracking-wider uppercase text-neutral-400">{label}</label>}
-      
+      {label && (
+        <label className="block text-xs font-mono tracking-wider uppercase text-neutral-400">
+          {label}
+        </label>
+      )}
+
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         {value ? (
           <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-900 flex-shrink-0 group">
@@ -73,7 +111,7 @@ export default function ImageUploader({
             {uploading ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>Uploading...</span>
+                <span>Uploading to Supabase CDN...</span>
               </>
             ) : (
               <>

@@ -10,24 +10,28 @@ CREATE TABLE IF NOT EXISTS public.portfolio_content (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. Enable Row Level Security (RLS)
+-- 2. Grant Table Permissions to Supabase Roles
+GRANT ALL ON TABLE public.portfolio_content TO authenticated;
+GRANT SELECT ON TABLE public.portfolio_content TO anon;
+
+-- 3. Enable Row Level Security (RLS)
 ALTER TABLE public.portfolio_content ENABLE ROW LEVEL SECURITY;
 
--- 3. RLS Policy: Anyone can read content
+-- 4. RLS Policy: Anyone can read content
 DROP POLICY IF EXISTS "Public Read Access" ON public.portfolio_content;
 CREATE POLICY "Public Read Access"
     ON public.portfolio_content
     FOR SELECT
     USING (true);
 
--- 4. RLS Policy: Only authenticated admin users can modify content
+-- 5. RLS Policy: Only authenticated admin users can modify content
 DROP POLICY IF EXISTS "Admin Write Access" ON public.portfolio_content;
 CREATE POLICY "Admin Write Access"
     ON public.portfolio_content
     FOR ALL
     USING (auth.uid() IS NOT NULL);
 
--- 5. Trigger for updated_at column
+-- 6. Trigger for updated_at column
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
 BEGIN
