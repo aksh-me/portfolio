@@ -34,7 +34,7 @@ export default function Nav() {
   }, []);
 
   // The /work sphere gallery is immersive and draws its own chrome
-  if (pathname === "/work") return null;
+  if (pathname === "/work" || pathname?.startsWith("/admin")) return null;
 
   return (
     <>

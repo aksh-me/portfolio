@@ -11,7 +11,7 @@ export default function Footer() {
   const pathname = usePathname();
 
   // The /work sphere gallery is a fullscreen experience — no footer there
-  if (pathname === "/work") return null;
+  if (pathname === "/work" || pathname?.startsWith("/admin")) return null;
 
   return (
     <footer className="hairline-t mt-24 md:mt-32">
