@@ -28,10 +28,7 @@ next-env.d.ts
 # vercel
 .vercel
 
-# Sanity build artifacts
-/dist
-/.sanity
 
-# Self-hosted studio (generated at build)
-/public/admin
-/.studiobuild
+
+# Local dev content store
+/data/portfolio.local.json
